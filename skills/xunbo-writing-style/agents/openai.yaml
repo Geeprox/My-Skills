@@ -1,0 +1,4 @@
+interface:
+  display_name: "Xunbo Writing Style"
+  short_description: "Chinese posts in Xunbo's reflective voice."
+  default_prompt: "Draft a Chinese post in Xunbo's style about the user's topic. Default 300-600 Chinese characters; expand up to ~1200 when the topic is complex. Keep conversational tone, parenthetical asides, cross-domain analogies, rhetorical questions, occasional English proper nouns, and emojis/symbols. Avoid copying sample lines verbatim."
