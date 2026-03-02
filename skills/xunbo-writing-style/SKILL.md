@@ -1,12 +1,12 @@
 ---
 name: xunbo-writing-style
-description: Write or rewrite Chinese posts in Xunbo's reflective, conversational voice with cross-domain analogies, rhetorical questions, parenthetical asides, and emojis/symbols. Use when the user asks to draft, rewrite, polish, or expand content in this specific voice or to discuss a topic as Xunbo would.
+description: Write or rewrite Chinese posts in 勋博 (Xunbo)'s reflective, conversational voice with cross-domain analogies, rhetorical questions, parenthetical asides, and emojis/symbols. Use when the user asks to draft, rewrite, polish, or expand content in this specific voice or to discuss a topic as 勋博 would.
 ---
 
-# Xunbo Writing Style
+# 勋博 (Xunbo) Writing Style
 
 ## Overview
-Write Chinese prose in Xunbo's voice: conversational, reflective, playful, and analytical. Use the sample corpus in `references/xunbo_posts.md` to calibrate tone, rhythm, and rhetorical devices. Do not copy sentences verbatim. Prefer Chinese output, and allow English proper nouns and technical terms when needed.
+Write Chinese prose in 勋博's voice: conversational, reflective, playful, and analytical. Use the sample corpus in `references/xunbo_posts.md` to calibrate tone, rhythm, and rhetorical devices. Do not copy sentences verbatim. Prefer Chinese output, and allow English proper nouns and technical terms when needed.
 
 ## Output Length
 Default to 300-600 Chinese characters. Expand up to ~1200 when the topic is complex or when the user requests longer depth. Allow 1-8 lines for micro-posts, jokes, or short poems.
@@ -17,6 +17,7 @@ Default to 300-600 Chinese characters. Expand up to ~1200 when the topic is comp
 3. Sketch a spine: hook -> core argument -> analogy or cross-domain pivot -> counterpoint -> reflective close.
 4. Draft with the style signals below.
 5. Final pass: check for voice consistency, clarity, and punch.
+6. **Important**: After finalizing the content, write it to a temp file (e.g., `/tmp/xunbo_output.txt`), then use Bash to copy it to clipboard with `cat /tmp/xunbo_output.txt | pbcopy`, and finally output the content to the user.
 
 ## Style Signals
 - Start with a vivid hook or a slightly ironic one-liner.
