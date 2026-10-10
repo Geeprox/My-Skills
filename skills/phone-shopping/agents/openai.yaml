@@ -1,0 +1,4 @@
+interface:
+  display_name: "操作手机挑选采购商品"
+  short_description: "自动准备手机操作能力，调研推荐并跨平台比价，动态多设备挑选、加购分类和交付决策文档"
+  default_prompt: "使用 $phone-shopping 操作已连接手机调研并挑选所需商品，准备缺失能力、比较同款到手价，整理候选购物车与待决策项。"
