@@ -1,0 +1,249 @@
+{
+  "scope": "real native, isolated target only",
+  "production_written_this_run": false,
+  "checks": [
+    {
+      "name": "reject-invalid-pinyin-before-native",
+      "proof": {
+        "rejected": true,
+        "error": "{\"validation_errors\": [{\"row\": 1, \"error\": \"use untoned syllables separated by commas, spaces or apostrophes; ü/v supported\"}]}"
+      }
+    },
+    {
+      "name": "file-normalization-and-dedup",
+      "proof": {
+        "input": 4,
+        "unique": 3,
+        "file_duplicates": 1
+      }
+    },
+    {
+      "name": "preview-leaves-source-exact",
+      "proof": {
+        "add": 3,
+        "fingerprint": "11b67df0274f204d4a6bc5cb1749e282758e2c9702142d7a81ba1d22fe5e7025"
+      }
+    },
+    {
+      "name": "batch-import-and-homophone-bucket",
+      "proof": {
+        "added": 3,
+        "pinyin_buckets": 2,
+        "backup_id": "backup-4bb33a309e6e422f8ee631f8df8635d2",
+        "native_import_pid": 8375,
+        "restart_pid": 8377,
+        "ranks": [
+          1,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "name": "existing-pairs-skip-native-add-and-preserve-bytes",
+      "proof": {
+        "added": 0,
+        "skipped": 3,
+        "fingerprint": "8901f456a16598906789d9065de0cadd82c396d9b7751031652fed6c13a53a5e"
+      }
+    },
+    {
+      "name": "manual-backup-hashes",
+      "proof": {
+        "id": "backup-cf905616ea7b4054a8863fe65532f231",
+        "fingerprint": "8901f456a16598906789d9065de0cadd82c396d9b7751031652fed6c13a53a5e"
+      }
+    },
+    {
+      "name": "tampered-plan-rejected",
+      "proof": {
+        "rejected": true,
+        "error": "Document signature mismatch; refusing modified plan/backup/journal"
+      }
+    },
+    {
+      "name": "full-500-row-native-transaction",
+      "proof": {
+        "added": 500,
+        "skipped": 0,
+        "seconds": 103.1419111250434,
+        "all_500_persisted_and_recalled": true,
+        "ranks_max": 1,
+        "existing_records_changed": 0
+      }
+    },
+    {
+      "name": "stale-plan-rejected",
+      "proof": {
+        "rejected": true,
+        "error": "Import/rollback aborted; backup and diagnostics retained. Transaction: tx-5c38e8fc961e416399a7bd3d7d706325; Preview is stale: dictionary words/counts changed; preview again"
+      }
+    },
+    {
+      "name": "prior-homophones-recall-after-large-append",
+      "proof": {
+        "ranks": [
+          1,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "name": "failure-native",
+      "proof": {
+        "rejected": true,
+        "error": "Import/rollback aborted; backup and diagnostics retained. Transaction: tx-de88d02ff247473f8d8b5f3ba7a0a1c4; native worker failed; clone must be discarded"
+      }
+    },
+    {
+      "name": "failure-native-source-exact",
+      "proof": {
+        "fingerprint": "fc45cfe62cc6bee7db177d03143ad35e1b4beda1b27a36b9283048cd0e8d69f3"
+      }
+    },
+    {
+      "name": "failure-before-swap",
+      "proof": {
+        "rejected": true,
+        "error": "Import/rollback aborted; backup and diagnostics retained. Transaction: tx-8c8bf76212da439e82bbb0d510574ac5; Injected failure before atomic exchange"
+      }
+    },
+    {
+      "name": "failure-before-swap-source-exact",
+      "proof": {
+        "fingerprint": "fc45cfe62cc6bee7db177d03143ad35e1b4beda1b27a36b9283048cd0e8d69f3"
+      }
+    },
+    {
+      "name": "failure-after-swap",
+      "proof": {
+        "rejected": true,
+        "error": "Import/rollback aborted; backup and diagnostics retained. Transaction: tx-211999bdcb7d42f7b486d6daed13c683; Injected failure after atomic exchange"
+      }
+    },
+    {
+      "name": "failure-after-swap-source-exact",
+      "proof": {
+        "fingerprint": "fc45cfe62cc6bee7db177d03143ad35e1b4beda1b27a36b9283048cd0e8d69f3"
+      }
+    },
+    {
+      "name": "rollback-refuses-new-learning-loss",
+      "proof": {
+        "rejected": true,
+        "error": "Rollback conflict: subsequent learning would be lost; no forced restore"
+      }
+    },
+    {
+      "name": "rollback-last-batch-exact",
+      "proof": {
+        "restored_pairs": 503,
+        "undo_backup_id": "backup-87bd7196d94f4ed9a7244b7fe05f6586"
+      }
+    },
+    {
+      "name": "rollback-500-to-populated-backup-exact",
+      "proof": {
+        "restored_pairs": 3,
+        "fingerprint": "8901f456a16598906789d9065de0cadd82c396d9b7751031652fed6c13a53a5e",
+        "undo_backup_id": "backup-41830c900b0a4068b5d15b371d8d72b8"
+      }
+    },
+    {
+      "name": "corrupted-backup-rejected",
+      "proof": {
+        "rejected": true,
+        "error": "Backup inventory or SHA256 mismatch"
+      }
+    },
+    {
+      "name": "pending-crash-before-swap-blocks-further-import",
+      "proof": {
+        "rejected": true,
+        "error": "Pending interrupted transaction; run status and recover first"
+      }
+    },
+    {
+      "name": "recover-crash-before-swap",
+      "proof": {
+        "child_exit": 86,
+        "phase": "aborted-recovered",
+        "final_source_exact": true
+      }
+    },
+    {
+      "name": "pending-crash-after-swap-blocks-further-import",
+      "proof": {
+        "rejected": true,
+        "error": "Pending interrupted transaction; run status and recover first"
+      }
+    },
+    {
+      "name": "recover-crash-after-swap",
+      "proof": {
+        "child_exit": 86,
+        "phase": "committed-recovered",
+        "final_source_exact": true
+      }
+    },
+    {
+      "name": "posix-lock-retained-through-hash-and-copy",
+      "proof": {
+        "competing_process_denied": true
+      }
+    },
+    {
+      "name": "restore-initial-empty-snapshot",
+      "proof": {
+        "record_count": 0,
+        "all_test_words_absent": true
+      }
+    }
+  ],
+  "started_at": "2026-10-17T03:43:59.713648+00:00",
+  "ok": true,
+  "finished_at": "2026-10-17T03:46:20.154055+00:00",
+  "total_checks": 26,
+  "native_audit_unit_tests": {
+    "passed": 38,
+    "scope": "synthetic KV/report policy tests; no native execution",
+    "command": "python3 audit_tests.py"
+  },
+  "lifecycle_fault_tests": {
+    "dictionary": "real native isolated",
+    "application_restore_failure": "simulated",
+    "production_written": false,
+    "checks": [
+      {
+        "name": "post-swap-restore-error-auto-rollback",
+        "exact_original_files_restored": true
+      },
+      {
+        "name": "failed-auto-rollback-lifecycle-recovered-by-records",
+        "phase": "aborted-recovered",
+        "exact_original_files_restored": true
+      },
+      {
+        "name": "new-learning-blocks-destructive-auto-undo-and-ambiguous-recovery",
+        "both_pairs_preserved_and_recalled": true,
+        "current_files_unchanged_by_recovery": true,
+        "pending_transaction_retained": true
+      }
+    ],
+    "ok": true
+  },
+  "release": {
+    "tool_version": "1.0.0",
+    "app_version": "3.0.0 (670)",
+    "production_batch_executed_this_run": false,
+    "native_source_files_sha256": {
+      "native_worker.cpp": "f45161340054c6f22954b6ae77722a980f955ab5a4484a88340205dfcc9cc59e",
+      "audit.hpp": "c1f6ca30a20c37550d30046d218856bb90a5eba62c566ec1da5e634b56b7ff74",
+      "kv_hash.cpp": "b662fce443af9c4bb210e60b2ff205672fbdb591b36d8ab63b8ad43d4a65c397",
+      "abi_profile.hpp": "dfa691ae0ec3d23b2cf79baabe18290fb1b876fa5ea0aab336bf99b05f13cc20",
+      "dictionary_items.inc": "0bc72b0809cd8a01ddf0a0ec8492208b6e51769536bebff04263af2abd8b8dd4"
+    },
+    "compiled_from_final_package": true
+  }
+}

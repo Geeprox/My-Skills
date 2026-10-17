@@ -1,0 +1,4 @@
+interface:
+  display_name: "微信输入法个人词库"
+  short_description: "校验、预览并批量导入微信输入法个人学习词库，支持备份与安全回滚"
+  default_prompt: "使用 $wetype-lexicon 校验这份词表并预览导入微信输入法个人学习词库。"

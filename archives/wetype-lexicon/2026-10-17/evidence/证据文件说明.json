@@ -1,0 +1,17 @@
+{
+  "artifact_arm64_sha256": "861d0b7f61d6f666745aadfc3073b156e972be87d67ba71919938406b82adebb",
+  "path_redactions": [
+    {
+      "file": "candidate-next.asm",
+      "original_file_sha256": "d5e878bea0af77787de4b804f39171ff9bd103370b5a6a0169207cb28f1faf2a",
+      "distributed_file_sha256": "154aa26b45c24a7aaa61a6301d5cd8cafa2ce29813132f1fd784e80904478831",
+      "change": "Removed personal absolute artifact path from disassembly heading only; instructions unchanged."
+    },
+    {
+      "file": "process-input.asm",
+      "original_file_sha256": "3aef42bfab0e5e2edab9817070afa25a7758f1fa4edc056c86b3974f434abe98",
+      "distributed_file_sha256": "c211f63d31b58cde9e7abbdb0cfdd83bd8972ed213950fa3fae7f2f9036522b5",
+      "change": "Removed personal absolute artifact path from disassembly heading only; instructions unchanged."
+    }
+  ]
+}

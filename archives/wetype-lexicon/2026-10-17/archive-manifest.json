@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-17",
+  "purpose": "Archived principle report and sanitized validation evidence; runtime data is excluded.",
+  "source_report_sha256": "51906d2e26f3b5f077a0655c43c8d8af45693306ef631e4ed0a5b3754e6d3633",
+  "archive_change": "Delivery links, command prefixes and an archive note adjusted to repository skill layout; source findings unchanged.",
+  "files": {
+    "acceptance.json": "43ea6ca0b6ebce63f8edcf29278965cfaf3a10340155156326819c560f415d59",
+    "evidence/REA保存记录摘要.json": "abb449fb8664195ac4c7b81d8025aa54656ef95cdcd3ae1fa6389364832be33c",
+    "evidence/candidate-next.asm": "154aa26b45c24a7aaa61a6301d5cd8cafa2ce29813132f1fd784e80904478831",
+    "evidence/learning-load-user.asm": "a68ed3562b2a368bd05ce97f4a087d5a03687778d02d7d7b1b63ad713405d13a",
+    "evidence/learning-user-add.asm": "26f89439f5ad005f97dd1bd93b04834a9a28a6a228219426d3b499d150d96cf5",
+    "evidence/learning-user-sync-add.asm": "f8ba717f5d49e080bba308f00f67672f7519ca9007eb878ffc1ce1d6c0e9d74b",
+    "evidence/learning-worditem-ctor.asm": "a2c8d739bea7b5085defd76ee8280faf6a567ce83f3c1ca3da06e4bdfdb975ce",
+    "evidence/process-input.asm": "c211f63d31b58cde9e7abbdb0cfdd83bd8972ed213950fa3fae7f2f9036522b5",
+    "evidence/正式单词验证摘要.json": "13e0630e3b720c3caa48aa7fcf49ed4f50c54a8588f7abf6721bcc3f1a4b17e3",
+    "evidence/证据文件说明.json": "d5dbafe0f0ca1536be0c4fb37cfc7e7b107811306d39ded29b0a61b786cee58a",
+    "evidence-index.json": "d9feb4fdea3e48352d372b17bf3682db6d7cf1c74224c4906e67b2ca3d19b6c2",
+    "report.html": "0c0642a85628b357110bcf0f4b97804eec1245017e472a57098e605cad30e750",
+    "skill-forward-test.json": "fcbbfd5496e47a7a88a82343b4dd75820724fa9317db22b560db674506d7fb40"
+  }
+}

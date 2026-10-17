@@ -1,0 +1,6 @@
+#include <Carbon/Carbon.h>
+#include <cstdio>
+#include <cstring>
+#include <string>
+static std::string string(CFStringRef s){if(!s)return "";char b[1024]{};if(!CFStringGetCString(s,b,sizeof(b),kCFStringEncodingUTF8))return "";return b;}
+int main(int argc,char**argv){auto current=TISCopyCurrentKeyboardInputSource();auto id=(CFStringRef)TISGetInputSourceProperty(current,kTISPropertyInputSourceID);std::string old=string(id);printf("current=%s\n",old.c_str());CFRelease(current);if(argc==1)return 0;if(argc!=2)return 2;auto target=CFStringCreateWithCString(nullptr,argv[1],kCFStringEncodingUTF8);const void*k[]={kTISPropertyInputSourceID};const void*v[]={target};auto filter=CFDictionaryCreate(nullptr,k,v,1,&kCFTypeDictionaryKeyCallBacks,&kCFTypeDictionaryValueCallBacks);auto list=TISCreateInputSourceList(filter,false);if(!list||CFArrayGetCount(list)!=1){fprintf(stderr,"target source unavailable\n");return 3;}auto source=(TISInputSourceRef)CFArrayGetValueAtIndex(list,0);OSStatus status=TISSelectInputSource(source);CFRelease(list);CFRelease(filter);CFRelease(target);if(status){fprintf(stderr,"select error=%d\n",status);return 4;}auto after=TISCopyCurrentKeyboardInputSource();auto selected=string((CFStringRef)TISGetInputSourceProperty(after,kTISPropertyInputSourceID));CFRelease(after);printf("selected=%s\n",selected.c_str());return selected==argv[1]?0:5;}

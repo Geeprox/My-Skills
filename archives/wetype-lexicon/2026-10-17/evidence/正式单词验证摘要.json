@@ -1,0 +1,37 @@
+{
+  "status": "imported",
+  "app": "微信输入法",
+  "version": "3.0.0 (670)",
+  "word": "青瓷脉阵",
+  "pinyin": "qing,ci,mai,zhen",
+  "type": "personal-learning-dictionary",
+  "added": 1,
+  "existing_records_changed": 0,
+  "native_new_process_recall": {
+    "rank": 1,
+    "count": 1,
+    "import_pid": 11840,
+    "verification_pid": 11974,
+    "separate_disposable_clone": true
+  },
+  "formal_write": {
+    "atomic_directory_swap": true,
+    "exact_staged_file_hashes_checked": true,
+    "official_app_restarted": true,
+    "official_new_pid": 12289
+  },
+  "official_ui_recall_verified": true,
+  "official_first_candidate_commit_verified": true,
+  "official_ui_verification": {
+    "time": "2026-10-17T11:31:52.278641+08:00",
+    "app": "WordProbe",
+    "input": "qingcimaizhen",
+    "selection_key": "Space",
+    "observed_output": "青瓷脉阵",
+    "source": "CUA accessibility tree and screenshot",
+    "typed_with_individual_keypresses": true,
+    "pasted_chinese": false,
+    "candidate_window_directly_inspected": false,
+    "note": "独立候选窗AX接口超时；通过连续按键输入拼音并按空格，直接核对正式输入法提交到输入框的文字。此操作正常学习同一测试词，不新增其他测试词。"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "ok": true,
+  "target": "lab",
+  "input_rows": 3,
+  "unique_pairs": 2,
+  "duplicates_in_file": 1,
+  "added": 2,
+  "skipped_existing": 0,
+  "transaction": "tx-4cb5390a6ebc4dfba0835c85d3611bd0",
+  "backup_id": "backup-1b0312548a484129b740ae3e8ff4a35a",
+  "separate_process_pids": {
+    "import": 37946,
+    "transaction_recall": 37949,
+    "explicit_verify": 37965
+  },
+  "recall": [
+    {
+      "word": "青瓷脉阵",
+      "pinyin": "qing,ci,mai,zhen",
+      "count": 1,
+      "rank": 1,
+      "candidates": 538,
+      "truncated": false
+    },
+    {
+      "word": "云栖织流",
+      "pinyin": "yun,qi,zhi,liu",
+      "count": 1,
+      "rank": 1,
+      "candidates": 569,
+      "truncated": false
+    }
+  ],
+  "repeat_preview": {
+    "add": 0,
+    "skip_existing": 2
+  },
+  "record_audit": {
+    "before_count": 0,
+    "after_count": 2,
+    "before_hash": "742b747d176e6778bf342470e8808dd559b54769aa0228ba54e719778292fee5",
+    "after_hash": "4fc5fb2397c0e84710525c19a9a57d846d42613216d7acd1b432179c14d01fea",
+    "existing_records_changed": 0,
+    "added_pairs": 2,
+    "removed_pairs": 0,
+    "unexpected_pairs": 0,
+    "exact_add_only": true
+  },
+  "kv_audit": {
+    "ok": true,
+    "added_pairs": 2,
+    "skipped_pairs": 0,
+    "target_buckets": 2,
+    "counter_before": 0,
+    "counter_after": 2,
+    "header_created": true,
+    "delta": {
+      "added": [
+        "0666d653aa81fa9470b5b69bebe24694bfe05cdc623b357197fa63e9c42c869d",
+        "542a4a83ded7ec5528c098d826f632703091d2167e090f54dcda1ab1aa544e04",
+        "88877bdf0b300bbe4252c79dfd814c83f5d242c5d7311df2d841800ff5e5c541",
+        "926b987a526fafd3e08ea117d4f15822a55b6d8fec69c863b705d5119c98ca34",
+        "c54c64c3719a3f72840ac8f03b6ca7669b50a9db033c3fa7d9b6b0ff7fb37a5e"
+      ],
+      "removed": [],
+      "modified": []
+    },
+    "record_audit": {
+      "before_count": 0,
+      "after_count": 2,
+      "before_hash": "742b747d176e6778bf342470e8808dd559b54769aa0228ba54e719778292fee5",
+      "after_hash": "4fc5fb2397c0e84710525c19a9a57d846d42613216d7acd1b432179c14d01fea",
+      "existing_records_changed": 0,
+      "added_pairs": 2,
+      "removed_pairs": 0,
+      "unexpected_pairs": 0,
+      "exact_add_only": true
+    }
+  },
+  "pending_transactions": [],
+  "skill_source_unchanged": true,
+  "formal_app_invoked": false,
+  "native_sandbox": {
+    "applied": true,
+    "formal_read_denied": true,
+    "formal_write_denied": true,
+    "outside_write_denied": true,
+    "network_denied": true
+  }
+}

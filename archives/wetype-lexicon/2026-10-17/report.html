@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="description" content="微信输入法个人学习词库的产生、原生添加、持久化、拼音召回与安全批量导入，含分层实验结果与脱敏证据索引。"><title>微信输入法个人学习词库：原理与导入报告</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:25px}body{margin:0;background:#f7f7f2;color:#242b25;font:16px/1.85 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}main{max-width:1120px;margin:auto;padding:68px 34px 86px}a{color:#38624c;text-underline-offset:4px;text-decoration-thickness:1px}a:hover{color:#1f4631}button{font:inherit;cursor:pointer}h1,h2,h3,h4,p{margin-top:0}h1{font-size:clamp(35px,5vw,58px);line-height:1.22;letter-spacing:-1.8px;font-weight:640;margin-bottom:25px}h2{font-size:clamp(25px,3vw,33px);line-height:1.4;font-weight:620;letter-spacing:-.7px;margin-bottom:22px}h3{font-size:21px;line-height:1.5;margin-top:32px;margin-bottom:13px}h4{font-size:18px;line-height:1.5;margin:7px 0 12px}p{margin-bottom:18px}strong{font-weight:650}.eyebrow,.section-label{font-size:12px;font-weight:650;letter-spacing:1.1px;color:#697866}.eyebrow{margin-bottom:22px}.section-label{margin-bottom:13px}.lead{max-width:770px;font-size:19px;line-height:1.85;color:#596156}.hero-meta{display:flex;gap:14px 25px;flex-wrap:wrap;font-size:13px;color:#70786b;margin:30px 0 32px}.verdict{display:flex;gap:16px;padding:24px 26px;background:#edf1e8;border:1px solid #dbe3d3;border-radius:12px}.verdict p{font-size:15px;color:#52604f;margin:6px 0 0}.dot{width:8px;height:8px;background:#538058;border-radius:50%;flex-shrink:0;margin-top:10px}.toc{display:flex;flex-wrap:wrap;gap:7px 22px;padding:23px 0;margin:32px 0 7px;border-top:1px solid #ddd;border-bottom:1px solid #ddd}.toc a{font-size:13px;text-decoration:none;color:#66705f}section{padding:51px 0 0;margin-top:20px;scroll-margin-top:25px}section+section{border-top:1px solid #dedfd6;margin-top:47px}.table-wrap{overflow-x:auto;margin:25px 0 23px}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.8}th,td{padding:16px 15px;vertical-align:top;text-align:left;border-bottom:1px solid #dedfd6}th{background:#eeefe8;color:#59624f;font-weight:600}th:first-child,td:first-child{padding-left:17px}td:first-child{color:#4a5546;min-width:105px}tbody tr:last-child td{border-bottom-color:#cdd2c5}details{margin:25px 0;padding:17px 20px;border:1px solid #dbdfd3;border-radius:8px;background:#fbfcf8}summary{font-weight:550;cursor:pointer;color:#4b624b}details[open] summary{margin-bottom:17px}details p:last-child{margin-bottom:0}code,pre{font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}code{overflow-wrap:anywhere;background:#eeefe8;padding:2px 4px;border-radius:3px}pre{overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#eceee5;border-radius:8px;padding:20px 22px;color:#4b5646;margin:10px 0 24px}.code-caption,.note{font-size:13px;color:#6b7364;line-height:1.8}.code-caption{margin-top:25px}.ref{font-size:12px;white-space:nowrap}.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:30px 0 35px}.flow>div{border:1px solid #d9dece;padding:18px 12px 16px;border-radius:8px;background:#fcfdf9}.flow b{display:block;font-size:12px;color:#7e8c72;margin-bottom:10px}.flow strong{font-size:14px;display:block;white-space:nowrap}.flow small{display:block;font-size:11px;color:#78816f;margin-top:7px;line-height:1.5}.triple{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:24px 0}.triple article{padding:22px;background:#eff1e9;border-radius:8px}.triple span{font-size:12px;color:#7b876e}.triple p{font-size:14px;margin:0;color:#626d57}.triple code{font-size:11px}aside{background:#edf1e7;border-left:3px solid #819575;padding:21px 25px;border-radius:0 7px 7px 0;margin:25px 0;font-size:15px}aside p{margin:7px 0 0;color:#56654e}.important{border-left-color:#627b53;background:#e9eee0}.steps{padding-left:25px;margin:29px 0}.steps>li{padding:0 0 11px 10px;margin-bottom:12px}.steps>li::marker{font:14px ui-monospace,monospace;color:#7d896e}.steps strong{font-size:18px}.steps p{margin:7px 0 0;color:#56614f;font-size:15px}.result-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:31px 0}.result-strip>div{border-top:2px solid #8b9a7d;padding:15px 4px 10px}.result-strip strong{display:block;font-size:40px;line-height:1.3;font-variant-numeric:tabular-nums;font-weight:540;letter-spacing:-1px}.result-strip span{display:block;font-size:13px;color:#7b846f;line-height:1.7;margin-top:8px}.levels{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;border:1px solid #dbe0d1;border-radius:8px;padding:23px;margin:23px 0}.levels b{font-size:14px;color:#5c7152}.levels p{font-size:13px;line-height:1.7;color:#7a846d;margin:7px 0 0}.pending{padding:22px 25px;border:1px dashed #b7c1aa;border-radius:8px;background:#f1f3eb}.pending p{font-size:14px;color:#778068;margin:8px 0 0}#download-evidence{border:1px solid #a2b094;background:#e8eddf;color:#42553a;border-radius:7px;padding:10px 17px;font-size:14px}#download-evidence span{margin-left:17px}.sources td{font-size:13px}.sources code{font-size:11px}.sources td:first-child{min-width:52px}footer{margin-top:55px;padding-top:22px;border-top:1px solid #d6dbce;font-size:12px;color:#838b7a}a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid #647e51;outline-offset:4px}@media(max-width:850px){.flow{grid-template-columns:repeat(3,1fr)}.triple{grid-template-columns:1fr}.levels{grid-template-columns:repeat(2,1fr)}th,td{padding:13px 11px}main{padding:40px 23px 65px}}@media(max-width:480px){body{font-size:15px}main{padding:32px 18px 55px}h1{letter-spacing:-1px}.lead{font-size:17px}.verdict{padding:20px 18px}.result-strip{gap:11px}.result-strip strong{font-size:31px}.result-strip span{font-size:11px}.flow{gap:7px}.flow>div{padding:15px 10px}.flow strong{font-size:13px}.levels{padding:18px}th,td{min-width:160px}th:first-child,td:first-child{min-width:92px}}@media print{html{scroll-behavior:auto}body{background:white;font-size:11pt}main{max-width:none;padding:0}.toc,#download-evidence{display:none}h1{font-size:34pt}h2{font-size:22pt}section{padding-top:25px;margin-top:20px}.verdict,.flow,.triple,.levels,aside,.result-strip,pre,details{break-inside:avoid}thead{display:table-header-group}tr{break-inside:avoid}a{color:inherit}details{background:white}.table-wrap{overflow:visible}footer{margin-top:30px}}</style></head><body><main><header class="hero"><div class="eyebrow">微信输入法 · macOS · 个人学习词典</div><h1>词是怎样被记住的，<br>又怎样安全地批量导入。</h1><p class="lead">从真实上屏、原生 Add、音节索引与 LevelDB，到重新启动后的拼音候选。本报告把原理、已经跑通的导入路线和仍未关闭的问题放在同一条证据链上。</p><div class="hero-meta"><span>调查与验证 · 2026.10.16—17</span><span>当前适配 · 3.0.0（670）/ Apple Silicon</span></div><div class="verdict"><span class="dot"></span><div><strong>个人学习词典的原生导入链路已跑通。</strong><p>一个虚构测试词已写入用户正式词库，并在正式输入法中通过逐键全拼 + 空格实际提交到输入框。大规模结果来自隔离合成词库；新的整合批量工具单独列出验收状态。</p></div></div></header><aside><strong>仓库归档说明。</strong><p>研究结果保留为 2026-10-17 快照；执行入口现封装为 <a href="../../../skills/wetype-lexicon/SKILL.md">$wetype-lexicon</a>。命令中的 <code>SKILL_DIR</code> 是实际安装目录，运行数据放在私有任务工作区。下载仓库 ZIP 后，按 Skill 入口使用随附脚本。</p></aside><nav class="toc" aria-label="报告目录"><a href="#distinction">01 两种词库</a><a href="#pipeline">02 全链路</a><a href="#method">03 逆向方法</a><a href="#abi">04 版本适配</a><a href="#transaction">05 安全导入</a><a href="#results">06 实测结果</a><a href="#batch-tool-final">07 批量工具</a><a href="#sources">08 证据索引</a></nav><section id="distinction"><div class="section-label">01 / 先确定导入目标</div><h2>个人学习词典和“常用语”，是两套机制。</h2><p>本次真正打通的是<strong>按自然拼音参与候选竞争的个人学习词典</strong>。把“短码 → 文本”导入常用语，不能等价替代专业术语、人名或项目名的学习词典导入。</p><div class="table-wrap"><table><thead><tr><th>维度</th><th>个人学习词典</th><th>常用语 / 自定义短语</th></tr></thead><tbody><tr><td>输入体验</td><td>输入拼音，在普通候选中寻找目标词；顺序受匹配与历史状态影响。</td><td>输入指定短码，展开固定文字或模板。</td></tr><tr><td>主要入口</td><td>上屏学习事件；内部 <code>UserDictV2::Add</code>。</td><td>设置页；“导入系统自定义短语”；<code>UserHotWordDict::Import</code>。</td></tr><tr><td>核心存储</td><td><code>userDict/v5/&lt;generation&gt;</code>，主中文词典 kind 128、命名空间 <code>!v2u!</code>。</td><td><code>userDict/user_hot_word</code>，独立容器。</td></tr><tr><td>导入所需</td><td>词 + 明确的逐音节拼音；由原生引擎构造学习元数据。</td><td>输入码 + 内容；不继承其他输入法的自然词频。</td></tr></tbody></table></div><details><summary>系统短语桥接仍然适合什么场景？</summary><p>固定快捷回复可走“词表 → 系统短语 plist → macOS 自定义短语 → 微信导入系统自定义短语”。本机 2.2.3 的 UI 与静态函数均确认了该入口。系统导入 wrapper 曾观察到总量 1000、输入码前 8 个字符、内容前 2000 个字符等限制；它们只代表该构建的这条入口，不能推广成所有版本或底层 API 的永久限制。</p><p>这一桥接本次没有执行正式批量导入。公开资料与本机静态入口说明可行性，不能代替导入后的真实召回验收。</p></details></section><section id="pipeline"><div class="section-label">02 / 产生 → 记忆 → 召回</div><h2>一次学习，涉及词条、索引和操作记录。</h2><div class="flow" aria-label="学习与召回链路"><div><b>1</b><strong>真实上屏</strong><small>选择候选 / 连续输入</small></div><div><b>2</b><strong>筛选与记录</strong><small>单次 / 多次上屏处理</small></div><div><b>3</b><strong>原生 Add</strong><small>合并学习元数据</small></div><div><b>4</b><strong>持久化与索引</strong><small>LevelDB / 音节 / action</small></div><div><b>5</b><strong>拼音查询</strong><small>查词、过滤、评分</small></div><div><b>6</b><strong>候选与提交</strong><small>候选更新 / 实际上屏</small></div></div><h3>产生：真实输入进入学习处理器。</h3><p>静态链路包含 <code>UserDictSingleEmitWrapper::onInputEmitted</code>、<code>UserDictMultipleEmitsWrapper</code>，中文分支进一步进入 <code>UpdateNormalUserDict → UpdateUserCnDictHelper::Add → AddWithCallBack</code>。连续多次上屏还可能组合记录；潜在词典 kind 148 / <code>!potential_ud!</code> 与主词典 kind 128 是不同目标。<a class="ref" href="#src-s1">[S1]</a></p><p>这说明“输入一次就必定学习”不是一个已证明的规则。粘贴、光标上下文、组合词过滤及潜在词提升阈值仍未完整恢复；本次导入器通过已验证的主词典 Add 路线添加显式词对。</p><h3>记忆：计数、时间和匹配状态一起更新。</h3><p><code>UserDictV2::Add(pinyin, word, option)</code> 经读写层读取已有状态并合并记录，维护 Bloom filter、动态音节索引和相应操作日志。<code>WordItemV2</code> 内层为 48 字节元数据加词文本；不是只存一个裸词或一个整数“词频”。同词重复 Add 会更新学习计数，所以工具要先查重、跳过已有词对。<a class="ref" href="#src-s1">[S1]</a></p><div class="code-caption">内层词记录的已确认序列化布局；不是给用户编写的导入格式</div><pre>0                 1..2                    3..50              51..
+标记字节 0        LE uint16 词字节数      48B 元数据        UTF-8 词文本
+
+一个 value 中可串联多条记录；外层还有命名空间与存储封装。</pre><h3>落盘：三个层面需要一起考虑。</h3><div class="triple"><article><span>词条事实</span><h4>LevelDB + 命名空间</h4><p>主个人词典 <code>!v2u!</code> 的拼音桶内存放一个或多个词记录。SST、WAL、MANIFEST 和 CURRENT 共同描述数据库状态。</p></article><article><span>查询路径</span><h4>静态 + 动态音节索引</h4><p><code>ReLoadIndex / LoadStaticIdx</code> 与 <code>MemBasedUserSyllableIdxDict</code> 服务后续拼音查询。仅手写一个 value 不能证明索引同步。</p></article><article><span>变更轨迹</span><h4>操作记录 <code>!dcact!</code></h4><p>原生 Add 产生有序 action；旧 action 被清理后，header 的累计序号仍保留。不能用现存 action 最大键推导下一条序号。</p></article></div><p class="note">3.0 操作 header 解码后为 16B：保留字段 + 累计序号（均为 LE64）。底层存储值有逐字节 +6 与长度 / magic 尾部封装，不能把原始 LevelDB value 当作未封装结构解析。工具采用严格版本和精确变化校验；这些内部格式不是公开协议。<a class="ref" href="#src-s2">[S2]</a></p><h3>召回：存在词对，仍需要走完整候选链验证。</h3><p>音节图和用户词搜索器负责查找匹配词，读写层提供词记录，过滤和评分综合历史、时间及匹配类别；最终还要与主词库、模型和其他搜索策略合并。完整评分公式和所有系数未恢复，不能承诺导入词永远排第一。</p><p>运行验证输入无分隔的连续全拼，逐个 ASCII 键调用 <code>wxime_process_input</code>，从候选回调取得迭代器并枚举；新进程再次查词和查候选，把“内存里可见”“已落盘”“新进程可召回”分开确认。正式 UI 验证则进一步检查按键后真正提交的文字。</p></section><section id="method"><div class="section-label">03 / 方法与证据边界</div><h2>REA 给出静态线索，运行结论来自真实引擎与系统验收。</h2><p>本调查使用 <code>reverse-engineer-anything</code> 工作流，但没有把不同工具的能力合并成一个“REA 已经全部反编译并测试”的结论。</p><div class="table-wrap"><table><thead><tr><th>工具 / 方法</th><th>实际承担的工作</th><th>不能由此推导</th></tr></thead><tbody><tr><td>REA + Ghidra</td><td>2.2.3 的原样函数摘录：序列化伪代码、系统短语导入函数的汇编、基本块、调用与引用 dossier。地址、原始字节摘要和 Evidence ID 均保留。</td><td>摘录外函数体、数据段或完整 App 行为。序列化摘录尾部有 bad-instruction 警告。</td></tr><tr><td><code>nm / llvm-objdump</code> 与本地静态脚本</td><td>原 Mach-O 符号、函数地址、虚表槽、字符串 / 引用交叉定位，以及指令级参数、字段布局核对；3.0 ABI 主要依据。</td><td>静态路径存在不证明本次输入触发，也不证明所有分支均覆盖。</td></tr><tr><td>自编 C++ harness</td><td>加载本机代码的隔离副本，真正执行原生 Add、等待完成、查词、枚举拼音候选；正常结束后用另一个进程重开验证。</td><td>不能自动代表正式 App 的全部设置、云候选、双拼与所有输入路径。</td></tr><tr><td>macOS OS sandbox / 文件锁 / 原子交换</td><td>加载目标代码前限制文件与网络；验证拒绝探针；正式事务在正常退出、持有原生兼容锁后一致复制与交换。</td><td>不能把进程锁、普通文件拷贝或成功写入当作断电耐久性证明。</td></tr><tr><td>CUA + 原生输入框</td><td>真实选择微信输入法，逐键输入连续拼音，按 Space，检查输入框实际收到的测试词。</td><td>独立候选窗 AX 检查超时，未宣称直接读到了候选窗列表；未以粘贴中文代替召回。</td></tr></tbody></table></div><aside><strong>整份 Ghidra 分析未成功完成。</strong><p>2.2.3 全量分析超过等待窗口后，改为有来源映射的函数摘录与静态反汇编。3.0 的 Ghidra 分析同样未取得可用结果；保存的 3.0 REA Evidence 文件记录数为 0。3.0 的运行验收不依赖虚构的 REA 反编译成功。<a class="ref" href="#src-r1">[R1–R3]</a></p></aside></section><section id="abi"><div class="section-label">04 / 2.2.3 → 3.0.0</div><h2>升级后重新确认 ABI，不能平移旧地址。</h2><p>适配固定到 <strong>3.0.0（670）的确切字节</strong>。版本号一致但哈希不同也要停止；内部 C++ 接口、libc++ 对象与虚表不是腾讯公开稳定 API。</p><div class="table-wrap"><table><thead><tr><th>关键点</th><th>2.2.3（657）</th><th>3.0.0（670）与处理方式</th></tr></thead><tbody><tr><td><code>UserDictAddOption</code></td><td>16B</td><td>20B、4B 对齐；新增 <code>+0x10 uint32 pendingPattern</code>，正常选词 caller 显式置 0。原有字段没有移位。</td></tr><tr><td>Add 返回值</td><td colspan="2">32B <code>std::function&lt;void()&gt;</code>，按隐藏返回 ABI 接收，调用返回的 callable 等待完成，再析构。不能把函数强转为 void 返回。</td></tr><tr><td>对象身份</td><td colspan="2">通过 <code>ResourceMgr → Resources → DictManager → GetSharedDictByKind(128)</code>，并检查虚表与 kind；不只凭一个地址就调用。</td></tr><tr><td>查重</td><td colspan="2"><code>LookUpByPair</code> 的返回按已确认 optional 布局解码；只在 found 时读取 count，已有词跳过。</td></tr><tr><td>版本定位</td><td>保留独立旧工具与旧实验</td><td>初始化、资源配置、session、候选迭代器、Add / GetPair 和虚表重新定位；不同 ABI 实验根不混用。</td></tr></tbody></table></div><details><summary>查看固定版本身份与 3.0 添加参数</summary><pre>2.2.3 ARM64 SHA-256
+1cbf1fff6fb19b6655b7d5f0d479f17fe03e04102fa0743b2af8c5b0240adb4d
+
+3.0.0（670）ARM64 SHA-256
+861d0b7f61d6f666745aadfc3073b156e972be87d67ba71919938406b82adebb
+
+3.0.0（670）完整可执行文件 SHA-256
+ba19f0c2783acb8c6f09cf2c9d95e55a33bbc93034ef3d97ab728021cdda14a8
+
+添加参数：kind=0、minimumHot=1、flag=0、updateRelated=0、category=0、
+extraC=1、pendingPattern=0；padding 清零。</pre><p>参数来自静态 caller 与隔离运行交叉核对。派生 Mach-O 副本仅改变加载元数据并临时签名；原有 51 个含文件内容 section 校验不变。公共词典与 Frameworks 等依赖也固定摘要，升级后拒绝沿用旧缓存。</p></details></section><section id="transaction"><div class="section-label">05 / 把原生 Add 变成可审计导入</div><h2>准备、验证、提交分开；候选查询也可能写数据。</h2><aside class="important"><strong>最关键的修正：提交副本只执行 Add；召回验收放在另一个可丢弃副本。</strong><p>完整会话查询会触发 <code>CandidateCompletion::ExposureInfoWriteBack → UserPrefixDict::Update → UpdateExp</code>，更新 <code>!user_prefix2!</code> 的曝光统计。最初完整 KV 审计发现两个既有前缀键变化，闸门拒绝写回。随后将“Add-only 待提交副本”和“召回验证副本”分开，保留候选验收而不把曝光副作用带回正式词库。<a class="ref" href="#src-s2">[S2、P1]</a></p></aside><ol class="steps"><li><strong>校验与预览。</strong><p>输入词和明确的逐音节拼音；规范化格式，检查字段、字符 / 音节数、音节白名单与批量边界。按“规范化拼音 + 词”去重。同音不同词保留，已有词跳过；跳过时不调用 Add，不增加旧计数。预览固定词表和主词状态，主记录或元数据改变后计划失效；仅辅助日志 / 曝光统计变化可在新快照中保留。</p></li><li><strong>正式退出并拿到正确的锁。</strong><p>先切到普通输入源，正常退出微信输入法；若未退出或自动重启则中止。使用与 LevelDB 实际锁兼容的 <code>fcntl</code> 记录锁，持有原数据库的 <code>LOCK</code> 文件锁后才复制。检查 PID 或 lsof 只能辅助观察，不能代替排他锁。</p></li><li><strong>一致备份、受限副本添加。</strong><p>对完整 v5 目录做一致备份并核对逐文件摘要；引擎只在备份克隆内运行。目标代码加载前施加 OS sandbox，实测正式库读写、job 外写入、网络连接被拒绝。每词先查重、调用高层 Add 并等待完成。</p></li><li><strong>全量语义与完整 KV 双重闸门。</strong><p>比较全部主词记录及元数据：只允许计划中新词增加、旧记录原样保持。再比较完整底层 KV，严格核对目标拼音桶、action header 及相应连续 action；不能只统计条数或忽略其他命名空间。每个新增 action 序号从旧 header 累计计数递增验证。</p></li><li><strong>在另一个副本、新进程验证召回。</strong><p>克隆 Add-only 结果，重新初始化引擎，验证持久词对与实际连续拼音候选。验证副本即使生成曝光统计也不参与提交。目标未在枚举范围内出现或回调失败时拒绝该批；目标已出现而列表截断时，保留 truncated 标记，不把它解释为完整候选列表。</p></li><li><strong>原子提交与失败恢复。</strong><p>确认正式 App 仍未重启、备份和变化闸门通过后，对旧目录和待提交目录持锁，用同文件系统 <code>renamex_np(RENAME_SWAP)</code> 交换；核对新旧两侧精确文件摘要并同步目录。失败时交换回旧目录并恢复输入法。没有原子交换能力时拒绝静默降级为多文件覆盖。</p></li></ol><div class="table-wrap"><table><thead><tr><th>保护</th><th>本次证据</th><th>边界</th></tr></thead><tbody><tr><td>备份 / 回滚 / 过期计划</td><td>3.0 旧隔离工具 27 项行为检查通过，覆盖备份损坏、外来备份、精确回滚、计划过期、路径逃逸、链接和并发锁等。</td><td>这是旧版验收；整合版另外完成了第 07 节的最终包复测。</td></tr><tr><td>中途失败 / 超时 / kill</td><td>已在隔离 job 内检查部分添加后失败不切换旧 CURRENT；kill / 超时观察到部分新词存在于待处理副本、旧版本保持不变。</td><td>这是原规模实验的边界；新工具的交换前后硬退出 / recover 测试另见第 07 节，仍不等于任意断电或文件系统故障。</td></tr><tr><td>回调归属</td><td>改进版以 session、当前线程和调用 token 验证最终键回调，异常和迭代器释放有专门检查；100 词新进程验收与旧基线一致。</td><td>不能把“ProcessInput 期间回调来了”当作天然同步；整合版采用独立 RAII 释放与回调异常捕获，并保留每词 150ms 等待；不把该性能分支的 token 结论套用到整合版。</td></tr></tbody></table></div></section><section id="results"><div class="section-label">06 / 分层看结果</div><h2>正式单词已成功；规模实验的口径各不相同。</h2><div class="result-strip"><div><strong>1</strong><span>正式测试词<br>逐键输入后实际提交</span></div><div><strong>10,000</strong><span>隔离词对<br>全量新进程候选成功</span></div><div><strong>20,000</strong><span>隔离词对全量存在<br>另测 1000 个候选样本</span></div></div><div class="table-wrap"><table><thead><tr><th>实验</th><th>真正验证了什么</th><th>结果 / 限制</th></tr></thead><tbody><tr><td>2.2.3 与 3.0 基础隔离</td><td>3 个虚构词的原生添加、同音多词、新进程重开、重复导入保护。</td><td>新进程候选排名 1、2、1；count 均为 1。版本升级分别适配。</td></tr><tr><td>1 万词 <a class="ref" href="#src-t2">[T2]</a></td><td>全量添加；新进程全量词对与连续全拼候选；同一固定合成分布。</td><td>10,000 / 10,000 全部召回，count=1、最大 rank=1。完整导入事务约 239.7 秒；非独立受控吞吐基准。</td></tr><tr><td>2 万词 <a class="ref" href="#src-t3">[T3]</a></td><td>20,000 对全部在新进程存在；按插入顺序等距分层取 1000 个（含首尾）检查候选。</td><td>全部词对 count=1；样本 1000 / 1000 召回。不能写成“2 万词全量候选验证”。</td></tr><tr><td>5 万词 <a class="ref" href="#src-t4">[T4]</a></td><td>50,000 对全量持久存在；同法 1000 样本候选。</td><td>999 / 1000 样本成功，1 个目标未出现在 193 个未截断候选中；该轮未提交，旧 CURRENT 保持。</td></tr><tr><td>首查询异常复核 <a class="ref" href="#src-t5">[T5]</a></td><td>单词库、独立 1 万 + 500、启动等待 0 / 150 / 500ms、非目标查询预热；共 31 次新进程目标查询。</td><td>31 次均成功，未复现原失败状态。启动异步加载只是待证假设；固定等待未被证明是修复。</td></tr><tr><td>正式词库测试 <a class="ref" href="#src-p1">[P1]</a></td><td>授权的一个虚构词原子写回；新进程复核；正式输入法真实按键提交。</td><td>新增 1，既有主词记录未改变；正式 UI 输入 <code>qingcimaizhen</code> + Space 实得“青瓷脉阵”。未做正式大批导入。</td></tr></tbody></table></div><aside><strong>5 万不是已测得的引擎容量上限。</strong><p>失败样本已经持久存在，后续小规模对照又能召回；原因尚未锁定。不能把候选枚举上限、工具单批行数、管理词数限制、未就绪状态或一次样本失败写成引擎硬上限。十万词候选全量验收在本报告中没有成立。</p></aside><h3>正式 UI：验证的是实际提交，不是贴上测试文字。</h3><p>2026 年 10 月 17 日 11:31，在原生输入框逐个按键输入全拼并按空格，CUA 的可访问性树与截图确认输出为测试词。正式输入法已重新启动，底层新进程复核也通过。独立候选窗接口超时，因此报告仅声称“实际提交验证成功”，不声称直接观察到完整候选窗。测试词是明确创建的虚构词，不展示其他个人词条。</p><h3>证据的层级不能互相替代。</h3><div class="levels"><div><b>结构</b><p>符号与指令说明路径和布局。</p></div><div><b>原生隔离</b><p>Add 真执行，词对真持久。</p></div><div><b>新进程候选</b><p>重开后仍可通过拼音找到。</p></div><div><b>正式输入法</b><p>真实按键产生实际提交文字。</p></div></div><p class="note">跨设备同步、双拼 / 简拼 / 混输全覆盖、全部学习过滤与评分系数、断电耐久性及无限规模上限仍未完成验证。静态同步代码的存在不证明云同步已发生。</p></section><section id="batch-tool-final" data-status="final-isolated-acceptance-passed"><div class="section-label">07 / 整合批量工具 · 1.0.0 已验收</div><h2>一个入口，分别管理隔离库与正式库。</h2><p>整合版统一了校验、预览、原生添加、备份、回滚与硬中断恢复。<strong>默认 <code>--target lab</code>；正式库必须显式选择 <code>--target formal</code></strong>。同一工作区固定 target，不能中途从 lab 切到 formal。工作区始终保存副本、缓存和私有备份，不是正式库目录。</p><p><a href="../../../skills/wetype-lexicon/references/usage.md">完整使用说明</a> · <a href="../../../skills/wetype-lexicon/assets/example-words.tsv">示例 TSV</a> · <a href="acceptance.json">最终验收 JSON</a> · <a href="https://github.com/Geeprox/My-Skills/archive/refs/heads/main.zip">下载工具 ZIP</a></p><div class="verdict" id="integrated-acceptance-final"><span class="dot"></span><div><strong>最终源码包复测通过；本轮仅对隔离库执行验收。</strong><p>工具 1.0.0，适配微信输入法 3.0.0（670）。实际从最终包编译的原生源码完成 26 项真实隔离 E2E；另有 38 项纯逻辑 KV / 报告审核测试，以及 3 项真实隔离词库 + 模拟应用恢复故障测试通过。每类证据单独保留，未合并称为“67 项真实正式库测试”。</p></div></div><div class="table-wrap"><table><thead><tr><th>最终包验收</th><th>通过结果</th><th>证明的范围</th></tr></thead><tbody><tr><td>真实原生隔离 E2E</td><td>26 项</td><td>校验、预览、查重 no-op、同音词、500 词事务、备份、旧计划 / 损坏备份拒绝、精确回滚、POSIX 锁及硬中断 recover。</td></tr><tr><td>纯逻辑审核</td><td>38 项</td><td>使用合成 KV / 报告验证差异审核策略；这一组不执行原生引擎。</td></tr><tr><td>应用恢复故障</td><td>3 项</td><td>词典为真实原生隔离库；应用恢复失败是模拟条件，覆盖自动换回、记录分类恢复及保护后续学习。</td></tr><tr><td>最大单批 500 词</td><td>约 103.1 秒</td><td>全部 500 词在新进程 count=1、rank&gt;0，本次最大 rank=1；原有主记录不变。使用保守的每词 150ms 等待路径。</td></tr></tbody></table></div><p>交换前后各有普通异常与真正 <code>os._exit(86)</code> 测试：交换前恢复为 <code>aborted-recovered</code>，交换后分类为 <code>committed-recovered</code>，两者核对预期源文件。应用恢复故障中，若已经出现新学习，则拒绝破坏性自动回退及无法判定的恢复，保留当前数据和待恢复事务。这些检查不等于任意断电耐久性验证。</p><p class="note">最终发布验收记录明确 <code>production_batch_executed_this_run=false</code>；没有用本轮整合工具对用户正式库再做批量写入。正式环境已验证的是此前的一个测试词，<a href="evidence/正式单词验证摘要.json">脱敏正式单词验证摘要</a>单独提供。</p><h3>输入格式与兼容边界</h3><p>固定匹配本报告的 3.0.0（670）代码与依赖；Apple Silicon macOS、Python 3.9+、Xcode Command Line Tools。无需 pip、网络依赖或 sudo；只签名工作区内派生副本，不修改已安装 App。</p><p>UTF-8 TSV / CSV 的两列准确命名为 <code>word</code>、<code>pinyin</code>；JSON 使用相同字段的对象数组。支持 1–16 个汉字及同数量合法音节，NFKC 规范化、ü → v，拼音显式分隔且不带声调。格式检查不判断多音字读音是否正确。</p><pre>word          pinyin
+青瓷脉阵      qing,ci,mai,zhen
+
+TSV 文件中的两列使用实际制表符；上方只作排版示意。
+JSON：[{"word":"青瓷脉阵","pinyin":"qing,ci,mai,zhen"}]</pre><p><strong>每批最多 500 条输入行，包含文件内重复行；文件最多 2 MiB。</strong>不自动拆成多个提交批次。候选最多枚举前 2048 项，目标未出现则整批不提交；已找到目标但列表被截断时保留 <code>truncated</code> 标记。每批行数、枚举数和运行时限都是工具保护边界，不是引擎容量上限。</p><h3>先在隔离库跑通同一份词表</h3><pre>"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-demo init
+"$SKILL_DIR/scripts/wetype" validate 示例词表.tsv
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-demo preview 示例词表.tsv
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-demo import --plan 计划ID
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-demo verify 示例词表.tsv</pre><p>所有命令输出 JSON。<code>preview</code> 返回规范化词表、文件内重复、已有词对、拟新增与跳过数量，以及签名计划 ID。导入重新取得一致快照；主词或元数据变化会拒绝旧计划，纯 action / 曝光统计变化可从新快照保留。全部已有词的重复导入不调用 Add，也不交换数据库。</p><h3>正式导入：使用独立私有工作区</h3><pre>"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal init
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal preview 我的词表.tsv
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal import --plan 计划ID
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal verify 我的词表.tsv</pre><p><code>init</code> 只准备工具与工作区，不写正式库。<code>preview / backup / verify</code> 会短暂切到 ABC、正常退出输入法取得一致快照，然后恢复原运行状态与输入源；查询在副本中执行。<code>import / rollback</code> 在校验与交换期间持续停用输入法，应在不输入文字时操作。逐词召回验证需要时间，500 词可达数分钟。</p><p>工作区末级目录名必须以 <code>wetype-lab</code> 开头；拒绝 Library、Applications、App 内目录，以及符号链接、硬链接、特殊文件和不安全共享权限。包含个人快照的工作区应私有保管，不打包分享。工具仅处理固定用户的 v5；常用语等旁路目录不纳入也不修改。</p><h3>备份、回滚与撤销回滚</h3><pre>"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal backup
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal backups
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal preview-rollback 备份ID
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal rollback --plan 回滚计划ID</pre><p>导入和回滚前自动备份完整 v5、逐文件摘要与签名元数据。回滚先审查备份，在副本核对全部主记录和已知词召回，重新备份当前版本后才原子交换；返回 <code>undo_backup_id</code> 可用于再次预览恢复。</p><aside><strong>回滚会拒绝覆盖后续正常学习。</strong><p>当前主词记录摘要必须匹配该备份对应的导入后状态。之后新增词、词频更新或正常选词学习造成冲突时，工具拒绝回滚，没有强制覆盖选项。手工备份也不能绕过这项保护随意恢复旧快照。</p></aside><h3>程序硬中断后：先查看状态，再恢复事务</h3><pre>"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal status
+"$SKILL_DIR/scripts/wetype" --workspace /私有路径/wetype-lab-formal --target formal recover 事务ID</pre><p>事务日志在停止输入法前记录原运行状态与输入源，在交换前保存前 / 后摘要。普通异常尽可能自动换回旧库；硬中断后 <code>recover</code> 按当前库与已审核前 / 后状态分类，恢复输入法并标记提交或未提交，不盲目覆盖词库。无法判断时保留数据并拒绝继续；待恢复事务未关闭前，禁止新的 import / rollback。不要手动删除锁文件、日志或中间目录。</p><p class="note">本工具的正式 target 实现与隔离 E2E，不等价于本次对用户正式库做了批量验收。已取得的正式 UI 证据仍是此前授权的一个测试词，见第 06 节。</p></section>
+<section id="sources"><div class="section-label">08 / 可复核来源</div><h2>结论有来源，未完成项保留边界。</h2><p>下表为可读来源摘要。下载按钮导出本页内嵌的脱敏 JSON 证据索引，无网络请求；静态证据链接指向已有交付文件。原始正式库、备份、个人目录及审计密钥均不嵌入本页。</p><button id="download-evidence" type="button">下载脱敏证据索引 JSON <span aria-hidden="true">↓</span></button><div class="table-wrap"><table class="sources"><thead><tr><th>编号</th><th>保存的证据</th><th>支持的范围</th></tr></thead><tbody><tr id="src-r1"><td>R1</td><td>REA <code>procedure_pseudo_code</code>；Ghidra 12.1.4；<code>0x1007740b0</code>。<br><code>ev_5eb3d7c0cd07aca9bd5e752905291c9e8a4694cc95a9a0e8c9c18fe80eedf331</code></td><td>2.2.3 序列化函数 84B 原样摘录，尾部解析不完整。</td></tr><tr><td>R2</td><td>REA <code>analyze_function</code>；系统导入 3120B 摘录；<code>0x1001080fc</code>。<br><code>ev_c29629acbdeba479c18e9a893738afbdedd76ef1e280f6a89c49f703093c37ba</code></td><td>函数汇编、基本块、调用 / 引用；外部体与数据段缺失，以原 Mach-O 补证。</td></tr><tr><td>R3</td><td>3.0 REA 保存文件：records = 0。</td><td>仅记录未成功取得结果的边界，不作为成功反编译证明。</td></tr><tr id="src-s1"><td>S1</td><td><a href="evidence/learning-user-add.asm">Add / 返回 ABI</a> · <a href="evidence/learning-user-sync-add.asm">SyncAdd</a> · <a href="evidence/learning-worditem-ctor.asm">WordItem</a> · <a href="evidence/learning-load-user.asm">词库装配</a> · <a href="evidence/process-input.asm">ProcessInput</a> · <a href="evidence/candidate-next.asm">候选迭代</a></td><td>3.0 的符号、字段、地址与调用边界；静态证据。</td></tr><tr id="src-s2"><td>S2</td><td>前缀曝光链：<code>0x101c15af4 → 0x101bd4580 → 0x101878704</code>；action 写入 <code>0x1018cce50</code>、header 读取 <code>0x1018cd578</code>、封装 <code>0x101f82e1c</code>。</td><td>为何召回副本应丢弃、为何按 header 而非剩余 action 最大键校验。</td></tr><tr><td>T1</td><td>3.0 原隔离工具 27 项行为验收；版本、哈希与结果摘要在内嵌索引中。</td><td>基础工具的查重、隔离、备份与失败路径；不自动覆盖新版 CLI。</td></tr><tr id="src-t2"><td>T2</td><td>scale-10000：全量新进程词对与候选。</td><td>固定合成分布的 1 万词结果；约 239.7 秒。</td></tr><tr id="src-t3"><td>T3</td><td>capacity-20000：全量词对 + 1000 分层样本。</td><td>2 万词持久性及抽样候选。</td></tr><tr id="src-t4"><td>T4</td><td>capacity-50000：全量词对 + 999 / 1000 样本；失败不提交。</td><td>一个未解决异常；不是 5 万硬上限。</td></tr><tr id="src-t5"><td>T5</td><td>独立 initial / mixed / startup：31 次目标查询。</td><td>未复现；无法确认启动竞态。</td></tr><tr id="src-p1"><td>P1</td><td><a href="evidence/正式单词验证摘要.json">正式单词脱敏摘要</a>：事务、新进程复核及 CUA 实际提交。</td><td>正式环境一词成功；未扩大为正式批量成功。</td></tr><tr><td>T6</td><td><a href="acceptance.json">整合工具最终验收 JSON</a>，1.0.0 最终源码包编译复测。</td><td>26 项真实隔离 E2E + 38 项纯逻辑审核 + 3 项真实隔离词库 / 模拟应用恢复故障；正式批量未执行。</td></tr></tbody></table></div><details><summary>公开资料与第三方路线如何使用？</summary><p><a href="https://support.apple.com/zh-cn/guide/mac-help/mchl2a7bd795/mac">Apple 官方系统短语导入帮助</a>本轮复查仍可用，支持 plist 导入入口。<a href="https://wxkeyboardcms-1258476243.file.myqcloud.com/page/article/index/11.html">微信输入法隐私政策</a>仅作为此前保存的产品背景资料引用：本轮自动复查未取得正文，不能视为已重新核实其当前表述。公开资料不提供本次私有 C++ ABI，也不构成导入算法保证；核心结论依据安装产物与实际运行验收。</p><p>macOS 第三方 ime-lexicon 所查固定提交为 <code>9ea38f620ed4e0db3e8dc8cfbe3f2253b084c090</code>：固定 value 模板、启发式 WAL / SST 读取与 batch 序号处理存在待解决问题，本次未用于正式库。Android 补丁方案不能直接套用到 macOS；Windows / iOS 的当前官方学习词库批量规范，本次没有足够证据确认。</p></details></section><footer>离线单文件报告 · 原理、证据与版本边界截至 2026-10-17。整合批量工具 1.0.0 已完成隔离验收；正式批量 target 本轮未执行。<br>无第三方脚本、字体或追踪请求；下载证据索引仅在浏览器本地生成。</footer></main><script id="evidence-index" type="application/json">{
+  "schema": 1,
+  "title": "微信输入法个人学习词库原理与导入报告：脱敏证据索引",
+  "date": "2026-10-17",
+  "privacy": "仅保留测试结论、公开函数/版本标识和文件摘要；不含个人词条、用户目录、原始库、备份或审计密钥。",
+  "public_background_sources": [
+    {
+      "title": "Apple系统短语导入帮助",
+      "url": "https://support.apple.com/zh-cn/guide/mac-help/mchl2a7bd795/mac",
+      "verification": "Current page verified by parent web research; plist import supported"
+    },
+    {
+      "title": "微信输入法隐私政策",
+      "url": "https://wxkeyboardcms-1258476243.file.myqcloud.com/page/article/index/11.html",
+      "verification": "Previously retained product background only; current automated recheck did not retrieve the body"
+    }
+  ],
+  "identities": {
+    "2.2.3_arm64": "1cbf1fff6fb19b6655b7d5f0d479f17fe03e04102fa0743b2af8c5b0240adb4d",
+    "3.0.0_670_arm64": "861d0b7f61d6f666745aadfc3073b156e972be87d67ba71919938406b82adebb",
+    "3.0.0_670_universal": "ba19f0c2783acb8c6f09cf2c9d95e55a33bbc93034ef3d97ab728021cdda14a8"
+  },
+  "sources": [
+    {
+      "id": "R1",
+      "method": "REA / Ghidra 12.1.4",
+      "operation": "procedure_pseudo_code",
+      "evidence_id": "ev_5eb3d7c0cd07aca9bd5e752905291c9e8a4694cc95a9a0e8c9c18fe80eedf331",
+      "source": "2.2.3 SerializeTo 84-byte raw excerpt",
+      "excerpt_sha256": "0c155b46b1729379a46c63b720674b43a8ddce4ac58278734883274715cfc3c0",
+      "address": "0x1007740b0",
+      "limit": "Bad-instruction at excerpt tail; not a complete decompilation",
+      "retained_record_file_sha256": "7a037d910115f931d5c2cd1403507d713807da7a6bbfb6e23954194f46d941df"
+    },
+    {
+      "id": "R2",
+      "method": "REA / Ghidra 12.1.4",
+      "operation": "analyze_function",
+      "evidence_id": "ev_c29629acbdeba479c18e9a893738afbdedd76ef1e280f6a89c49f703093c37ba",
+      "source": "2.2.3 system import 3120-byte raw excerpt",
+      "excerpt_sha256": "bcd524db47104bc901974963ec810a156281791ae7cb8e3c042fff252492a30e",
+      "address": "0x1001080fc",
+      "limit": "Excerpt lacks external function bodies and original data segments; symbols/strings corroborated by Mach-O disassembly",
+      "retained_record_file_sha256": "4df59567034864189be38b85c548ba5eff07be7c682e826c2770c151c94d31e9"
+    },
+    {
+      "id": "R3",
+      "method": "REA / 3.0 analysis attempt",
+      "retained_record_count": 0,
+      "limit": "Whole-binary Ghidra analysis timed out; no successful 3.0 decompilation claim",
+      "retained_record_file_sha256": "000bef2a45fbd4b17adc4e2ab0acd65b076ef5c25f0d8479244c8088730de9cd"
+    },
+    {
+      "id": "S1",
+      "method": "nm + llvm-objdump + Mach-O/static ABI review",
+      "source": "3.0 UserDictV2/Add/GetPair/resources/session/candidate paths",
+      "public_relative_files": [
+        "evidence/learning-user-add.asm",
+        "evidence/learning-user-sync-add.asm",
+        "evidence/learning-worditem-ctor.asm",
+        "evidence/learning-load-user.asm",
+        "evidence/process-input.asm",
+        "evidence/candidate-next.asm"
+      ]
+    },
+    {
+      "id": "T1",
+      "method": "3.0 sandbox native harness",
+      "source": "27 behavioral checks",
+      "passed": 27,
+      "failed": 0,
+      "source_sha256": "685ef79dfe51d9f08c8812a05f08c1eed8f9f0a8d6787468afeb3a31aea2ce25",
+      "limit": "Original isolated tool acceptance, not acceptance of the newly integrated production CLI"
+    },
+    {
+      "id": "T2",
+      "method": "Synthetic scale experiment, original optimized worker",
+      "rows": 10000,
+      "all_restart_pairs": 10000,
+      "all_restart_candidates": 10000,
+      "max_rank": 1,
+      "count_range": [
+        1,
+        1
+      ],
+      "transaction_wall_seconds": 239.70484737493098,
+      "source_sha256": "a933b9f9029b79b5666b5d6d445644b2e8b8375cceb6dcda79ddb0ad62a1afdb"
+    },
+    {
+      "id": "T3",
+      "method": "Synthetic scale experiment, original optimized worker",
+      "rows": 20000,
+      "all_restart_pairs": 20000,
+      "candidate_sample_size": 1000,
+      "sample_recalled": 1000,
+      "sampling": "Evenly spaced insertion-order strata including endpoints",
+      "source_sha256": "3ef19bc8a37f8e4fcac99b2076ce98abc8cd5e89b842cc06571fa1df0cc45133",
+      "limit": "Not full 20k candidate verification"
+    },
+    {
+      "id": "T4",
+      "method": "Synthetic scale experiment, original optimized worker",
+      "rows": 50000,
+      "all_restart_pairs": 50000,
+      "candidate_sample_size": 1000,
+      "sample_recalled": 999,
+      "failed_sample_count": 1,
+      "current_unchanged": true,
+      "source_sha256": "32d16e6523462d080ce30ffb9aad0c87c559fee06195ab0b9cb6d3ea1214831b",
+      "limit": "Cause unresolved; not evidence of a hard engine capacity limit"
+    },
+    {
+      "id": "T5",
+      "method": "Independent first-query experiments",
+      "probe_count": 31,
+      "recalled": 31,
+      "source_sha256s": {
+        "initial-results.json": "b8664c689b8f089fba21bfab6e976d97327a6e8cd7415ad4a55387f83c200372",
+        "mixed-results.json": "00d7c0d8128e69722fb6840bba0562cd1937d145c6952ba2c3820d30b4dba19c",
+        "startup-results.json": "274daaec5a636d87509bfbdfd98589ece2fe217f166ccdcd62b48cec2ad9a0b7"
+      },
+      "limit": "Did not reproduce original failing data state; neither startup race nor fixed sleep repair established"
+    },
+    {
+      "id": "P1",
+      "method": "One explicitly authorized production test word",
+      "version": "3.0.0 (670)",
+      "added": 1,
+      "existing_primary_records_changed": 0,
+      "atomic_directory_swap": true,
+      "post_restart_readback_ok": true,
+      "separate_native_process_rank": 1,
+      "separate_recall_clone": true,
+      "official_ui_recall_verified": true,
+      "official_first_candidate_commit_verified": true,
+      "candidate_window_directly_inspected": false,
+      "ui_method": "Individual ASCII pinyin keypresses then Space; verified committed test text in WordProbe via CUA AX and screenshot; not pasted Chinese",
+      "ui_time": "2026-10-17T11:31:52.278641+08:00",
+      "source_receipt_sha256": "13e0630e3b720c3caa48aa7fcf49ed4f50c54a8588f7abf6721bcc3f1a4b17e3",
+      "public_relative_file": "evidence/正式单词验证摘要.json",
+      "limit": "One test word; no production bulk acceptance inferred"
+    },
+    {
+      "id": "S2",
+      "method": "Static prefix/exposure/action/envelope review",
+      "source": "CandidateCompletion::ExposureInfoWriteBack / UserAssociationRW::UpdateExp / UserDictActionRecorder",
+      "addresses": {
+        "exposure": "0x101c15af4",
+        "prefix_update": "0x101878704",
+        "action_put": "0x1018cce50",
+        "action_header_load": "0x1018cd578",
+        "envelope_encrypt": "0x101f82e1c"
+      },
+      "limit": "Static control/data layout; runtime change guards validated separately"
+    }
+  ],
+  "new_integrated_cli": {
+    "id": "T6",
+    "status": "final_isolated_acceptance_passed",
+    "interface_frozen": true,
+    "default_target": "lab",
+    "formal_requires_explicit_flag": true,
+    "batch_input_rows_limit": 500,
+    "input_bytes_limit": 2097152,
+    "readme_relative": "../../../skills/wetype-lexicon/references/usage.md",
+    "commands": [
+      "init",
+      "validate",
+      "preview",
+      "import --plan",
+      "backup",
+      "backups",
+      "verify",
+      "preview-rollback",
+      "rollback --plan",
+      "status",
+      "recover"
+    ],
+    "production_bulk_written_this_run": false,
+    "tool_version": "1.0.0",
+    "native_lab_e2e_passed": 26,
+    "logic_audit_passed": 38,
+    "lifecycle_fault_passed": 3,
+    "lifecycle_dictionary": "real native isolated",
+    "lifecycle_application_restore_failure": "simulated",
+    "batch_500": {
+      "added": 500,
+      "skipped": 0,
+      "seconds": 103.1419111250434,
+      "all_500_persisted_and_recalled": true,
+      "ranks_max": 1,
+      "existing_records_changed": 0
+    },
+    "native_source_files_sha256": {
+      "native_worker.cpp": "f45161340054c6f22954b6ae77722a980f955ab5a4484a88340205dfcc9cc59e",
+      "audit.hpp": "c1f6ca30a20c37550d30046d218856bb90a5eba62c566ec1da5e634b56b7ff74",
+      "kv_hash.cpp": "b662fce443af9c4bb210e60b2ff205672fbdb591b36d8ab63b8ad43d4a65c397",
+      "abi_profile.hpp": "dfa691ae0ec3d23b2cf79baabe18290fb1b876fa5ea0aab336bf99b05f13cc20",
+      "dictionary_items.inc": "0bc72b0809cd8a01ddf0a0ec8492208b6e51769536bebff04263af2abd8b8dd4"
+    },
+    "acceptance_relative": "acceptance.json",
+    "acceptance_sha256": "43ea6ca0b6ebce63f8edcf29278965cfaf3a10340155156326819c560f415d59",
+    "package_relative": "https://github.com/Geeprox/My-Skills/archive/refs/heads/main.zip",
+    "note": "Final package native sources compiled and retested; production bulk target not executed this run."
+  }
+}</script><script>document.getElementById('download-evidence').addEventListener('click',function(){const data=document.getElementById('evidence-index').textContent;const blob=new Blob([data],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='微信输入法报告证据索引.json';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},1000)});</script></body></html>
