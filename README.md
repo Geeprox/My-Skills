@@ -8,7 +8,7 @@ A collection of reusable skills for Codex/Claude Code.
 |---|---|---|
 | [xunbo-writing-style](skills/xunbo-writing-style/SKILL.md) | 勋博写作风格 | 按既有写作风格撰写和改写中文内容，支持剪贴板工作流。 |
 | [phone-shopping](skills/phone-shopping/SKILL.md) | 操作手机挑选采购商品 | 自动准备缺失的手机操作能力；先调研推荐信息，再跨品牌、店铺、SPU/SKU 核对商详与到手价，优先官方/平台旗舰店并综合优惠；多设备动态并行，必要时问客服、加购分类，长任务留档并交付决策文档。 |
-| [wetype-lexicon](skills/wetype-lexicon/SKILL.md) | 微信输入法个人词库 | 校验、查重、预览并批量导入自然拼音个人学习词典，支持一致备份、原子写回、冲突保护回滚与中断恢复；当前适配 macOS Apple Silicon 微信输入法 3.0.0（670）。 |
+| [wetype-lexicon](skills/wetype-lexicon/SKILL.md) | 微信输入法个人词库 | 校验、查重、预览并在隔离库导入自然拼音个人学习词典；支持正式只读备份，正式提交与整库回滚因同步风险暂停；当前适配 macOS Apple Silicon 微信输入法 3.0.0（670）。 |
 
 ## 操作手机挑选采购商品
 
@@ -22,7 +22,7 @@ A collection of reusable skills for Codex/Claude Code.
 
 ## 微信输入法个人词库
 
-使用 `$wetype-lexicon`，提供 UTF-8 词表及目标（默认隔离；正式导入需明确授权）。随附原生工具针对微信输入法 3.0.0（670）的精确安装产物，每批最多500输入行。词库、备份、密钥和运行日志只放在私有任务工作区，不放入仓库。
+使用 `$wetype-lexicon`，提供 UTF-8 词表及目标（默认隔离；1.1 暂停正式导入与整库回滚，保留正式只读预览/备份/验证）。随附原生工具针对微信输入法 3.0.0（670）的精确安装产物，每批最多500输入行。词库、备份、密钥和运行日志只放在私有任务工作区，不放入仓库。
 
 - [Skill 入口](skills/wetype-lexicon/SKILL.md) · [使用与恢复](skills/wetype-lexicon/references/usage.md) · [验证边界](skills/wetype-lexicon/references/validation.md)
 - [2026-10-17 原理报告（HTML，下载后本地打开）](archives/wetype-lexicon/2026-10-17/report.html) · [脱敏证据索引](archives/wetype-lexicon/2026-10-17/evidence-index.json) · [历史验收](archives/wetype-lexicon/2026-10-17/acceptance.json)
@@ -42,3 +42,5 @@ A collection of reusable skills for Codex/Claude Code.
 - For example, install `skills/phone-shopping/` and invoke `$phone-shopping` with the current purchase requirements.
 - For other hosts, use that host's skill and MCP installation mechanism.
 - Keep this repo as the single source of truth; keep device configuration, credentials, screenshots, shopping records and private logs outside it.
+
+- [2026-10-19 同步兼容性核查（HTML）](archives/wetype-lexicon/2026-10-19/report.html) · [同步限制与保护](skills/wetype-lexicon/references/synchronization.md)

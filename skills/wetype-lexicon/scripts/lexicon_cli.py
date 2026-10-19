@@ -156,6 +156,31 @@ def snapshot(root,src):
     j=job(root);files=src.copy(j/'data/userDict/v5');return j,files
 
 def record_hash(report): return report['record_audit']['after_hash']
+FORMAL_IMPORT_PAUSE_REASON='Formal import is paused: the local consumer can trim its pending queue to 1000 and advance its cursor; neither that cursor nor local action presence proves cloud or cross-device completion'
+
+def refuse_formal_import(src):
+    require(src.mode!='formal',FORMAL_IMPORT_PAUSE_REASON)
+
+def formal_submission_policy(mode):
+    return {'formal_import_enabled':False,'formal_snapshot_rollback_enabled':False,'submission_disabled_reason':FORMAL_IMPORT_PAUSE_REASON} if mode=='formal' else {}
+
+def refuse_formal_snapshot_rollback(src):
+    require(src.mode!='formal', 'Formal full-snapshot rollback is disabled: cloud synchronization state and monotonic action IDs are not jointly restored')
+
+def preserve_formal_exchange(src,journal,checkpoint,error):
+    # quiet() already attempted restoration on exit. Retry the original UI/process
+    # intent, never reopen/quiesce the DB and never exchange a historical v5 back.
+    fields={'swapped':True,'error':str(error),'automatic_snapshot_rewind':False}
+    journal_error=None
+    try: checkpoint('recovery-required',**fields)
+    except BaseException as ex: journal_error=type(ex).__name__
+    restore_error=None
+    try: src.restore(bool(journal.get('original_running')),journal.get('original_source'))
+    except BaseException as ex: restore_error=type(ex).__name__
+    try: checkpoint('recovery-required',**fields,original_state_restore_attempted=True,original_state_restore_succeeded=restore_error is None,restore_error=restore_error,journal_write_error=journal_error)
+    except BaseException: pass
+    raise e.Error('Formal exchange completed; recovery is required. Current dictionary and both snapshots are preserved; automatic historical rollback is disabled. Transaction: '+journal['id']) from error
+
 def base_meta(root,kind):
     return {'schema':1,'workspace_id':e.read_json(root/'STORE.json')['id'],'abi':e.ABI,'source_sha256':e.SOURCE_SHA,'kind':kind,'created_at':now()}
 
@@ -201,9 +226,11 @@ def initialize(root,mode):
         if mode=='lab':
             j=job(root);native(root,j,'inspect',DUMMY)
             (root/'live').mkdir();shutil.copytree(j/'data/userDict/v5',root/'live/v5')
-    return {'target':mode,'workspace':str(root),'abi':e.ABI,'production_written':False,'batch_input_limit':500}
+    return {'target':mode,'workspace':str(root),'abi':e.ABI,'production_written':False,'batch_input_limit':500}|formal_submission_policy(mode)
 
 def transact(root,src,plan,fault=None):
+    if plan['kind']=='import-plan': refuse_formal_import(src)
+    else: refuse_formal_snapshot_rollback(src)
     tx=token('tx');journal=base_meta(root,'transaction')|{'id':tx,'target':src.mode,'plan_id':plan['id'],'operation':plan['kind'],'phase':'started','swapped':False}
     if src.mode=='formal': journal.update(original_running=bool(src.pids()),original_source=src.input_source())
     jp=root/'transactions'/(tx+'.json');save(root,jp,journal)
@@ -266,6 +293,7 @@ def transact(root,src,plan,fault=None):
     except BaseException as error:
         if incoming_fd is not None: os.close(incoming_fd);incoming_fd=None
         if did_swap:
+            if src.mode=='formal': preserve_formal_exchange(src,journal,checkpoint,error)
             try:
                 # The app may have reopened; reacquire both POSIX locks and audit before undo.
                 with src.quiet(resume=journal):
@@ -309,7 +337,7 @@ def execute(args):
             for p in (root/'transactions').glob('tx-*.json'):
                 s=read(root,p)
                 if s['phase'] in ('started','quiesced','backed-up','prepared','swapped','recovery-required'):pending.append({'id':s['id'],'phase':s['phase']})
-            return {'target':args.target,'abi':e.ABI,'workspace':str(root),'official_input_method_running':bool(src.pids()),'pending_transactions':pending,'batch_input_limit':500}
+            return {'target':args.target,'abi':e.ABI,'workspace':str(root),'official_input_method_running':bool(src.pids()),'pending_transactions':pending,'batch_input_limit':500}|formal_submission_policy(src.mode)
         if args.command=='backups':
             return [read(root,p) for p in sorted((root/'backups').glob('backup-*/backup.json'))]
         if args.command=='recover': return recover(root,src,args.transaction)
@@ -328,11 +356,12 @@ def execute(args):
                 require(len(present)==len(rows),'Some requested pairs are absent')
                 v=verify_separate(root,j,rows,record_hash(r))
                 return {'target':src.mode,'unchanged':True,'new_process_verify':v}
-            return record_plan(root,src,'import-plan',{'validation':valid,'base_record_hash':record_hash(r),'base_record_count':r['record_audit']['after_count'],'native_preview':r,'add':sum(not x['existed'] for x in r['rows']),'skip_existing':sum(x['existed'] for x in r['rows']),'fingerprint_at_snapshot':fp(files),'note':'Import takes a new consistent backup and rejects changed word metadata; auxiliary/log-only changes can be preserved from that fresh snapshot.'})
+            return record_plan(root,src,'import-plan',{'validation':valid,'base_record_hash':record_hash(r),'base_record_count':r['record_audit']['after_count'],'native_preview':r,'add':sum(not x['existed'] for x in r['rows']),'skip_existing':sum(x['existed'] for x in r['rows']),'fingerprint_at_snapshot':fp(files),'note':'Import takes a new consistent backup and rejects changed word metadata; auxiliary/log-only changes can be preserved from that fresh snapshot.'}|formal_submission_policy(src.mode))
         if args.command=='backup':
             with src.quiet():
                 j,_=snapshot(root,src);r,_=inspected(root,j,DUMMY);return backup_from(root,src,'manual',DUMMY,record_hash(r))
         if args.command=='preview-rollback':
+            refuse_formal_snapshot_rollback(src)
             path,b=backup_check(root,src,args.backup_id)
             rows=b['rows'] or DUMMY
             with src.quiet(): j,_=snapshot(root,src)

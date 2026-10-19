@@ -1,0 +1,28 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>微信输入法词库同步兼容性核查</title>
+<style>body{margin:0;background:#f7f6f2;color:#252824;font:16px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}main{max-width:940px;margin:auto;padding:60px 24px}h1{font-size:36px;line-height:1.35;letter-spacing:-1px}h2{font-size:23px;margin-top:46px}p{max-width:850px}a{color:#376b52}code{background:#e9ece5;padding:2px 5px;border-radius:4px;word-break:break-word}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;border-bottom:1px solid #d8ddd3;padding:12px 10px;vertical-align:top}th{background:#eef0e9}.note{padding:18px 22px;border-left:4px solid #9c7b3c;background:#f0eadc}.tag{color:#62695c;font-size:14px}.flow{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}.flow span{border:1px solid #c9d1c2;background:white;border-radius:8px;padding:10px 14px}.flow b{align-self:center;color:#7d8575}footer{margin-top:48px;color:#62695c;font-size:13px}</style><main>
+<p class="tag">WeType 3.0.0（670）· Apple Silicon · 2026-10-19 · Skill 1.1 同步核查补充</p>
+<h1>本地导入进入原生日志，<br>跨设备完整到达仍需验证</h1>
+<p class="note"><strong>当前处理：</strong>暂停正式导入和完整快照回滚，保留隔离导入、校验查重、正式只读预览、备份和验证。没有新增正式测试词，没有清理正式队列或修改同步设置。</p>
+<p>原生学习接口确实产生同步操作，消费者也读取同一队列。但已发现两处不能忽略的约束：积压超过1000的序号跨度时，原生消费者先裁剪旧动作；完整v5回滚可退回日志序号并在下一次学习复用。此前的本地持久化与候选召回通过，不能代替云端接收和远端合并验证。</p>
+<h2>学习到同步的链路</h2>
+<div class="flow"><span>UserDictV2::Add</span><b>→</b><span>词记录 / 拼音索引</span><b>＋</b><span>!dcact! 学习日志</span><b>→</b><span>PushIncremental</span><b>→</b><span>云端响应 / 本地水位</span><b>→</b><span>其他设备合并</span></div>
+<table><thead><tr><th>环节</th><th>已找到的证据</th><th>不能据此推导</th></tr></thead><tbody>
+<tr><td>产生操作</td><td>Add经ModifyItem、PutAction生成type3 / kind128动作；序列化含类型、键值、序号和类别，未见单动作UID字段。</td><td>隔离worker使用的测试配置不等于真实账号登录。日志存在不等于已经发送。</td></tr>
+<tr><td>进入消费者</td><td>PushIncremental读取同一ActionRecorder，最多256条，复制动作字段；请求身份来自正式应用当前运行环境。</td><td>登录、群组、开关、网络、时间或inflight条件均可能阻止本次消费。</td></tr>
+<tr><td>返回与清理</td><td>匹配请求且传输/逻辑错误均为0后更新本地水位，再清理动作；错误分支通常保留队列并允许重试。</td><td>仅看水位不能证明服务端确认：裁剪也会推进相同字段。水位以下残留也可能是合法崩溃窗口。</td></tr>
+<tr><td>远端召回</td><td>用户报告iPhone和另一台Mac都有此前测试词。</td><td>源Mac后来选词上屏，会生成普通学习，无法区分纯导入与后续学习的贡献。</td></tr>
+</tbody></table>
+<h2>1000是增量保留窗口，不是词库容量</h2>
+<p>消费者在 <code>maxSequence &gt; localWatermark + 1000</code> 时，先将水位推进至 <code>maxSequence − 1000</code>，清理更早动作，再读取最多256条。这一步没有网络确认。工具每批500行，并不保证已有积压或连续多批不会跨过窗口。</p>
+<p>二进制包含全量Dump/COS上传，但触发受成员、版本、请求时间等条件控制；TrySync先走增量路径。本次没有证明全量会补回所有裁剪动作，不能靠自动拆批、debug或所谓“强制full”承诺解决。</p>
+<h2>旧快照回滚为何不再用于正式库</h2>
+<p><code>!v2u!</code>、<code>!dcact!</code>、<code>!dcsc!CurrentInfoV3</code> 共用v5的底层IKV。完整快照同时恢复本地词、日志序号和消费水位，却无法撤回服务器与其他设备已经处理的状态。</p>
+<table><thead><tr><th>隔离步骤</th><th>实际观察</th></tr></thead><tbody>
+<tr><td>两次真实原生Add</td><td>header累计序号2，动作1、2存在。</td></tr><tr><td>模拟ACK后的本地队列清理</td><td>主词摘要不变，header仍为2，仅删除动作1、2。没有联系服务器。</td></tr><tr><td>执行旧回滚</td><td>主词冲突检查仍通过，header回到1，动作1复活。</td></tr><tr><td>再次真实原生Add</td><td>再次使用序号2，且payload与旧序号2不同。</td></tr></tbody></table>
+<p>本地回退与复用已经复现。服务器是否去重、拒绝或造成后续停滞尚未实测；此处只认定存在同步一致性风险，不声称观察到了实际云端损坏。</p>
+<h2>本机只读检查边界</h2><p>正式词库仅取得一致副本，在隔离进程中解析；私人运行诊断和完整证据留在本地。未增加正式词条、清队列、改同步设置或手动触发云端同步。本次不能宣称已证明队列持续前进或排除同步阻塞。</p><h2>工具1.1的保护</h2>
+<p>正式import、preview-rollback、rollback在事务入口拒绝，旧计划不能重新提交；状态和预览返回暂停原因。正式交换后出现异常时保留当前词库、备份及两份副本，尽力恢复应用状态并标记recovery-required，不自动换回历史v5。隔离导入、查重、备份和回滚保持原有行为。recover只判定本地状态与恢复应用，不代表恢复了云端一致性。</p>
+<p>恢复正式能力仍需队列预算与背压、不会复用旧序号的撤销/补偿设计，以及一轮独立授权的新词跨设备验收：先确认三端均无新词，只导入源端，不在源端选词；分别记录操作生成、消费响应和接收端候选。用户此前授权的一个正式词不扩展为新的写入授权。</p>
+<h2>REA在这次研究中的作用</h2>
+<p>REA提供分阶段逆向工作流、原生证据入口与Ghidra反编译。全应用Ghidra分析未成功取得可用结果；本次把同一固定产物中的584字节序列化函数精确提取，REA/Ghidra成功输出伪代码，与原指令交叉核对wire布局。消费者、裁剪、同步头由符号与指令分析定位，隔离反例和只读副本检查补充运行证据。REA没有替我们完成真实云端或跨设备验证；运行已封装Skill不依赖REA。</p>
+<h2>本次验证</h2><p>更新后的代码通过38项逻辑审核、8项正式提交保护测试、26项真实原生隔离端到端检查，以及3项隔离词条/模拟应用恢复故障检查。500词的真实隔离事务约99.5秒，全量持久化与召回通过；完整端到端自测约145秒。没有用正式账号运行故障注入，以上测试均不等于云端验收。</p><h2>材料范围</h2><p>本页公开原理、局限和修复说明；完整反汇编、REA片段及只读诊断保留在用户本地。<a href="../../../skills/wetype-lexicon/references/synchronization.md">Skill同步限制与验收要求</a>。</p><footer>本页为2026-10-17原理报告的同步核查补充，保留历史验收与本次新增证据的边界。归档不包含词库快照、账号、密钥或原始用户词条。</footer></main></html>
