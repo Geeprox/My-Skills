@@ -82,6 +82,34 @@ static std::shared_ptr<void> learningDict(void*h){
  if(!user||*static_cast<uintptr_t*>(user.get())!=slide+kUserDictVptr||*reinterpret_cast<uint16_t*>(static_cast<unsigned char*>(user.get())+0x20)!=128)throw std::runtime_error("UserDictV2 kind128 ABI mismatch");return user;
 }
 #include "audit.hpp"
+// Only this private, single-entry worker owns these native objects. Global
+// initialization stays normal, retaining the real KV codec. The recovered
+// per-instance test_mode byte suppresses native collateral cleanup and waits
+// for Add's own task; it is restored before lookup/export/finalize. This is a
+// version-pinned internal policy adapter, not a public WeType bulk API.
+static size_t policyCalls=0,policyRestores=0;
+class ScopedAddPolicy{
+ std::shared_ptr<void> keeper;unsigned char*flag=nullptr;
+public:
+ ScopedAddPolicy(void*h,const std::shared_ptr<void>&userOwner){
+  void*user=userOwner.get();
+  uintptr_t slide=(uintptr_t)dlsym(h,"wxime_initialize")-kInitialize;
+  if(!user||*static_cast<uintptr_t*>(user)!=slide+kUserDictVptr||*reinterpret_cast<uint16_t*>(static_cast<unsigned char*>(user)+0x20)!=128)throw std::runtime_error("Add policy dictionary identity rejected");
+  auto*impl=*reinterpret_cast<unsigned char**>(static_cast<unsigned char*>(user)+0x28);
+  if(!impl||(reinterpret_cast<uintptr_t>(impl)&7)||*reinterpret_cast<void**>(impl+0x208)!=user)throw std::runtime_error("Add policy implementation owner rejected");
+  keeper=learningDict(h);if(keeper.get()!=user||keeper.owner_before(userOwner)||userOwner.owner_before(keeper))throw std::runtime_error("Add policy shared ownership changed");
+  auto*strategy=*reinterpret_cast<void**>(impl+0x178);
+  auto*strategyControl=*reinterpret_cast<void**>(impl+0x180);
+  if(!strategy||!strategyControl||*static_cast<uintptr_t*>(strategy)!=slide+kCleanMakerVptr)throw std::runtime_error("Add policy cleaner identity rejected");
+  if(*reinterpret_cast<void**>(impl+0xa0)!=nullptr||impl[0x170]!=0)throw std::runtime_error("Add policy requires normal initialization and clock");
+  flag=impl+0x170;*flag=1;++policyCalls;
+ }
+ ScopedAddPolicy(const ScopedAddPolicy&)=delete;
+ ScopedAddPolicy&operator=(const ScopedAddPolicy&)=delete;
+ void restore(){if(flag){if(*flag!=1)throw std::runtime_error("Add policy changed during native task");*flag=0;if(*flag!=0)throw std::runtime_error("Add policy restoration failed");flag=nullptr;++policyRestores;}}
+ ~ScopedAddPolicy()noexcept{if(flag){*flag=0;++policyRestores;}}
+};
+
 static int run(const fs::path&root,const fs::path&job,const std::string&mode,int failAfter){
  checkedInputs(root,job);isolate(root,job);loadSecret(job);alarm(1800);
  if(fs::file_size(job/"request.tsv")>500*1025)throw std::runtime_error("request bounds exceeded");std::ifstream request(job/"request.tsv");if(!request)throw std::runtime_error("request unavailable");std::vector<Row>rows;std::string line;std::set<std::pair<std::string,std::string>>unique;
@@ -93,13 +121,13 @@ static int run(const fs::path&root,const fs::path&job,const std::string&mode,int
  alignas(8)unsigned char config[0xd0]{};config[8]=1;put(config,0,&logger);put(config,0x18,engine.c_str());put<int32_t>(config,0x38,-5);
  const char*uid="42424242",*version="3.0.0-lab",*model="isolated",*os="27.0";put(config,0x40,uid);put<uint32_t>(config,0x48,strlen(uid));put<uint32_t>(config,0x4c,2);put<uint32_t>(config,0x50,5);put(config,0x58,version);put<uint32_t>(config,0x60,strlen(version));put(config,0x68,model);put<uint32_t>(config,0x70,strlen(model));put(config,0x78,os);put<uint32_t>(config,0x80,strlen(os));put<uint32_t>(config,0xc0,3);
  reinterpret_cast<void(*)(void*)>(dlsym(h,"wxime_initialize"))(config);
- DictConfig dictionaries{packagedDicts,(uint32_t)(sizeof(packagedDicts)/sizeof(DictItem)),0,userPath.c_str()};reinterpret_cast<void(*)(void*)>(dlsym(h,"wxime_config_dict"))(&dictionaries);
+ DictConfig dictionaries{packagedDicts,(uint32_t)(sizeof(packagedDicts)/sizeof(DictItem)),0,userPath.c_str()};if(!reinterpret_cast<bool(*)(void*)>(dlsym(h,"wxime_config_dict"))(&dictionaries))throw std::runtime_error("native dictionary configuration failed");
  alignas(8)unsigned char sessionConfig[0x138]{};sessionConfig[1]=1;uint64_t sid=reinterpret_cast<uint64_t(*)(void*)>(dlsym(h,"wxime_create_session"))(sessionConfig);if(!sid)throw std::runtime_error("native session creation failed");
  Capture capture{h};reinterpret_cast<void(*)(uint64_t,decltype(&listener),void*)>(dlsym(h,"wxime_add_session_listener"))(sid,&listener,&capture);
  uintptr_t slide=(uintptr_t)dlsym(h,"wxime_initialize")-kInitialize;size_t added=0;RecordMap beforeAudit,afterAudit;
  {auto user=learningDict(h);beforeAudit=exportRecords(h,user.get());using Pair=uint64_t(*)(void*,std::string_view,std::string_view);using Add=std::function<void()>(*)(void*,std::string_view,std::string_view,const AddOption&);AddOption option;
   for(auto&r:rows){uint64_t before=entry<Pair>(slide,kLookUpPair)(user.get(),r.pinyin,r.word);r.existed=(before>>32)&1;r.count=r.existed?(uint32_t)before:0;
-   if(mode=="import"&&!r.existed){auto wait=entry<Add>(slide,kAdd)(user.get(),r.pinyin,r.word,option);if(wait)wait();r.added=true;++added;uint64_t after=entry<Pair>(slide,kLookUpPair)(user.get(),r.pinyin,r.word);r.count=(uint32_t)after;if(!((after>>32)&1))throw std::runtime_error("native Add did not persist pair");if(failAfter>0&&added>=(size_t)failAfter)throw std::runtime_error("injected failure after native Add");}
+   if(mode=="import"&&!r.existed){{ScopedAddPolicy policy(h,user);auto wait=entry<Add>(slide,kAdd)(user.get(),r.pinyin,r.word,option);if(wait)wait();policy.restore();}r.added=true;++added;uint64_t after=entry<Pair>(slide,kLookUpPair)(user.get(),r.pinyin,r.word);r.count=(uint32_t)after;if(!((after>>32)&1))throw std::runtime_error("native Add did not persist pair");if(failAfter>0&&added>=(size_t)failAfter)throw std::runtime_error("injected failure after native Add");}
    if(mode=="verify"&&!r.existed)throw std::runtime_error("pair missing after process restart");
   }
   afterAudit=exportRecords(h,user.get());std::set<std::string>expected;
@@ -108,15 +136,16 @@ static int run(const fs::path&root,const fs::path&job,const std::string&mode,int
   for(auto&[k,v]:afterAudit)if(!beforeAudit.count(k)&&!expected.count(k))throw std::runtime_error("unexpected exported pair");
   if(mode!="import"&&beforeAudit!=afterAudit)throw std::runtime_error("read-only operation changed records");
  }
- if(mode=="verify")for(auto&r:rows){auto reset=reinterpret_cast<void(*)(uint64_t)>(dlsym(h,"wxime_reset_session"));auto input=reinterpret_cast<void(*)(uint64_t,const char*,uint32_t,void*,uint32_t)>(dlsym(h,"wxime_process_input"));reset(sid);{std::lock_guard<std::mutex>g(capture.mutex);capture.words.clear();capture.truncated=false;if(capture.failed)throw std::runtime_error("candidate callback failed");}
+ if(mode=="verify"||mode=="candidates")for(auto&r:rows){auto reset=reinterpret_cast<void(*)(uint64_t)>(dlsym(h,"wxime_reset_session"));auto input=reinterpret_cast<void(*)(uint64_t,const char*,uint32_t,void*,uint32_t)>(dlsym(h,"wxime_process_input"));reset(sid);{std::lock_guard<std::mutex>g(capture.mutex);capture.words.clear();capture.truncated=false;if(capture.failed)throw std::runtime_error("candidate callback failed");}
   std::string keys=r.pinyin;keys.erase(std::remove(keys.begin(),keys.end(),','),keys.end());unsigned char extra[16]{};for(char key:keys)input(sid,&key,1,extra,16);std::this_thread::sleep_for(std::chrono::milliseconds(150));
   {std::lock_guard<std::mutex>g(capture.mutex);if(capture.failed)throw std::runtime_error("candidate callback failed");auto at=std::find(capture.words.begin(),capture.words.end(),r.word);r.rank=at==capture.words.end()?0:at-capture.words.begin()+1;r.candidates=capture.words.size();r.truncated=capture.truncated;}
-  if(!r.rank)throw std::runtime_error("pinyin recall verification failed (candidate enumeration limit 2048)");
+  if(mode=="verify"&&!r.rank)throw std::runtime_error("pinyin recall verification failed (candidate enumeration limit 2048)");
  }
  if(mode=="verify"){auto user=learningDict(h);auto recalled=exportRecords(h,user.get());if(recalled!=afterAudit)throw std::runtime_error("recall changed record metadata");}
  reinterpret_cast<void(*)(uint64_t)>(dlsym(h,"wxime_destroy_session"))(sid);reinterpret_cast<void(*)()>(dlsym(h,"wxime_finalize"))();
- std::ostringstream out;out<<"{\"schema\":1,\"abi\":"<<quote(kAbi)<<",\"add_option_bytes\":"<<sizeof(AddOption)<<",\"record_audit\":{\"before_count\":"<<recordCount(beforeAudit)<<",\"after_count\":"<<recordCount(afterAudit)<<",\"before_hash\":"<<quote(aggregate(beforeAudit))<<",\"after_hash\":"<<quote(aggregate(afterAudit))<<",\"existing_records_changed\":"<<mapChanges(beforeAudit,afterAudit)<<",\"added_pairs\":"<<added<<",\"removed_pairs\":0,\"unexpected_pairs\":0,\"exact_add_only\":true},\"pid\":"<<getpid()<<",\"mode\":"<<quote(mode)<<",\"sandbox\":{\"applied\":true,\"formal_read_denied\":true,\"formal_write_denied\":true,\"outside_write_denied\":true,\"network_denied\":true},\"rows\":[";
+ if(policyCalls!=added||policyRestores!=policyCalls)throw std::runtime_error("Add policy call/restore accounting failed");
+ std::ostringstream out;out<<"{\"schema\":1,\"abi\":"<<quote(kAbi)<<",\"add_option_bytes\":"<<sizeof(AddOption)<<",\"worker_policy\":{\"global_test_mode\":false,\"scoped_add_calls\":"<<policyCalls<<",\"restored_calls\":"<<policyRestores<<"},\"record_audit\":{\"before_count\":"<<recordCount(beforeAudit)<<",\"after_count\":"<<recordCount(afterAudit)<<",\"before_hash\":"<<quote(aggregate(beforeAudit))<<",\"after_hash\":"<<quote(aggregate(afterAudit))<<",\"existing_records_changed\":"<<mapChanges(beforeAudit,afterAudit)<<",\"added_pairs\":"<<added<<",\"removed_pairs\":0,\"unexpected_pairs\":0,\"exact_add_only\":true},\"pid\":"<<getpid()<<",\"mode\":"<<quote(mode)<<",\"sandbox\":{\"applied\":true,\"formal_read_denied\":true,\"formal_write_denied\":true,\"outside_write_denied\":true,\"network_denied\":true},\"rows\":[";
  for(size_t i=0;i<rows.size();++i){auto&r=rows[i];if(i)out<<',';out<<"{\"pinyin\":"<<quote(r.pinyin)<<",\"word\":"<<quote(r.word)<<",\"existed\":"<<(r.existed?"true":"false")<<",\"added\":"<<(r.added?"true":"false")<<",\"count\":"<<r.count<<",\"rank\":"<<r.rank<<",\"candidates\":"<<r.candidates<<",\"truncated\":"<<(r.truncated?"true":"false");auto rk=recordKey(r.pinyin,r.word);auto bi=beforeAudit.find(rk),ai=afterAudit.find(rk);static const std::vector<std::string>empty;const auto&bv=bi==beforeAudit.end()?empty:bi->second;const auto&av=ai==afterAudit.end()?empty:ai->second;out<<",\"record_tag\":"<<quote(rk)<<",\"metadata_unchanged\":"<<(bv==av?"true":"false")<<",\"before_metadata_tags\":[";for(size_t j=0;j<bv.size();++j){if(j)out<<',';out<<quote(bv[j]);}out<<"],\"after_metadata_tags\":[";for(size_t j=0;j<av.size();++j){if(j)out<<',';out<<quote(av[j]);}out<<"]}";}out<<"]}";
  printf("\nWETYPE_RESULT=%s\n",out.str().c_str());fflush(nullptr);return 0;
 }
-int main(int argc,char**argv){try{if(argc!=4&&argc!=5)throw std::runtime_error("invalid argument count");std::string mode=argv[3];if(mode!="inspect"&&mode!="import"&&mode!="verify")throw std::runtime_error("invalid mode");int fault=0;if(argc==5){std::string v=argv[4];if(v.empty()||v.size()>3||v.find_first_not_of("0123456789")!=std::string::npos)throw std::runtime_error("invalid fault bound");fault=std::stoi(v);if(fault<1||fault>500||mode!="import")throw std::runtime_error("invalid fault mode");}return run(checkedPath(argv[1]),checkedPath(argv[2]),mode,fault);}catch(const std::exception&){fprintf(stderr,"worker failed: request, audit or native operation rejected\n");fflush(nullptr);_exit(43);}catch(...){fprintf(stderr,"worker failed: native exception\n");fflush(nullptr);_exit(44);}}
+int main(int argc,char**argv){try{if(argc!=4&&argc!=5)throw std::runtime_error("invalid argument count");std::string mode=argv[3];if(mode!="inspect"&&mode!="import"&&mode!="verify"&&mode!="candidates")throw std::runtime_error("invalid mode");int fault=0;if(argc==5){std::string v=argv[4];if(v.empty()||v.size()>3||v.find_first_not_of("0123456789")!=std::string::npos)throw std::runtime_error("invalid fault bound");fault=std::stoi(v);if(fault<1||fault>500||mode!="import")throw std::runtime_error("invalid fault mode");}return run(checkedPath(argv[1]),checkedPath(argv[2]),mode,fault);}catch(const std::exception&){fprintf(stderr,"worker failed: request, audit or native operation rejected\n");fflush(nullptr);_exit(43);}catch(...){fprintf(stderr,"worker failed: native exception\n");fflush(nullptr);_exit(44);}}

@@ -168,7 +168,7 @@ def _report_rows(rows, report, key=None):
     result = report.get('rows')
     _require(type(result) is list and len(result) == len(rows), 'native row count rejected')
     mode = report.get('mode')
-    _require(mode in ('inspect','import','verify'), 'native report mode rejected')
+    _require(mode in ('inspect','import','verify','candidates'), 'native report mode rejected')
     added = 0
     for request, row in zip(rows, result):
         _require(type(row) is dict and all(row.get(k) == request[k] for k in ('pinyin','word')), 'native row identity rejected')
@@ -189,11 +189,14 @@ def _report_rows(rows, report, key=None):
             _require(mode == 'import' and before == [] and len(after) == 1 and row['count'] == 1, 'new pair record rejected')
             added += 1
         else:
-            _require(mode == 'inspect' and before == [] and after == [] and row['count'] == 0, 'missing pair status rejected')
+            _require(mode in ('inspect','candidates') and before == [] and after == [] and row['count'] == 0, 'missing pair status rejected')
         if mode == 'verify':
             _require(row['existed'] and _int(row.get('rank'), 'candidate rank', 2048) > 0, 'recall evidence rejected')
             candidates = _int(row.get('candidates'), 'candidate count', 2048)
             _require(candidates >= row['rank'] and type(row.get('truncated')) is bool, 'candidate bounds rejected')
+        if mode == 'candidates':
+            rank = _int(row.get('rank'), 'candidate rank', 2048)
+            _require(_int(row.get('candidates'), 'candidate count', 2048) >= rank and type(row.get('truncated')) is bool, 'candidate bounds rejected')
     audit = report.get('record_audit', {})
     _require(type(audit) is dict and audit.get('exact_add_only') is True, 'record audit absent')
     for name in ('existing_records_changed','removed_pairs','unexpected_pairs'):
@@ -211,7 +214,7 @@ def _report_rows(rows, report, key=None):
 def invoke_worker(root, job, mode, rows, *, worker=None, timeout=1800, fault_after=0):
     root, job = _job_paths(root, job)
     rows = validate_rows(rows)
-    _require(mode in ('inspect','import','verify'), 'invalid worker mode')
+    _require(mode in ('inspect','import','verify','candidates'), 'invalid worker mode')
     _require(type(fault_after) is int and 0 <= fault_after <= MAX_ROWS and (not fault_after or mode == 'import'), 'invalid fault mode')
     executable = _safe_path(worker or root / 'cache/worker', directory=False)
     _require(executable.parent == root / 'cache', 'worker must be in managed cache')

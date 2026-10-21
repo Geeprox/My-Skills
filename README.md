@@ -8,7 +8,7 @@ A collection of reusable skills for Codex/Claude Code.
 |---|---|---|
 | [xunbo-writing-style](skills/xunbo-writing-style/SKILL.md) | 勋博写作风格 | 按既有写作风格撰写和改写中文内容，支持剪贴板工作流。 |
 | [phone-shopping](skills/phone-shopping/SKILL.md) | 操作手机挑选采购商品 | 自动准备缺失的手机操作能力；先调研推荐信息，再跨品牌、店铺、SPU/SKU 核对商详与到手价，优先官方/平台旗舰店并综合优惠；多设备动态并行，必要时问客服、加购分类，长任务留档并交付决策文档。 |
-| [wetype-lexicon](skills/wetype-lexicon/SKILL.md) | 微信输入法个人词库 | 校验、查重、预览并在隔离库导入自然拼音个人学习词典；支持正式只读备份，正式提交与整库回滚因同步风险暂停；当前适配 macOS Apple Silicon 微信输入法 3.0.0（670）。 |
+| [wetype-lexicon](skills/wetype-lexicon/SKILL.md) | 微信输入法个人词库 | 接收有效词表并分批导入正式个人词库，支持校验、查重、预览、备份、队列背压和断点续导，原生学习记录沿官方链路同步。适配 macOS Apple Silicon 微信输入法3.0.0（670）。 |
 
 ## 操作手机挑选采购商品
 
@@ -22,11 +22,10 @@ A collection of reusable skills for Codex/Claude Code.
 
 ## 微信输入法个人词库
 
-使用 `$wetype-lexicon`，提供 UTF-8 词表及目标（默认隔离；1.1 暂停正式导入与整库回滚，保留正式只读预览/备份/验证）。随附原生工具针对微信输入法 3.0.0（670）的精确安装产物，每批最多500输入行。词库、备份、密钥和运行日志只放在私有任务工作区，不放入仓库。
-
+使用 `$wetype-lexicon` 并提供词表；明确要求写入日常词库时使用正式目标。1.2 提供 `wetype-sync`，支持 UTF-8 CSV/TSV/JSON（≤2MiB、≤100000行），自动查重并按当前队列余量分批导入，每段最多500条；繁忙时保存进度，使用原任务ID续导。正式操作使用服务互锁和独立恢复进程，每次新增前保留备份。原生Add已完成正式3词在iPhone和另一台Mac的0/3→3/3核对；本地 completed 与云端到达分别验收。词库、备份、密钥和日志保持私有。
 - [Skill 入口](skills/wetype-lexicon/SKILL.md) · [使用与恢复](skills/wetype-lexicon/references/usage.md) · [验证边界](skills/wetype-lexicon/references/validation.md)
 - [2026-10-17 原理报告（HTML，下载后本地打开）](archives/wetype-lexicon/2026-10-17/report.html) · [脱敏证据索引](archives/wetype-lexicon/2026-10-17/evidence-index.json) · [历史验收](archives/wetype-lexicon/2026-10-17/acceptance.json)
-- 归档明确区分 REA 静态证据、原生运行、新进程召回与正式单词实际上屏。未宣称对任意版本、正式大批词表或无限规模通过验证。
+- 归档明确区分 REA 静态证据、原生运行、新进程召回与正式单词实际上屏。只适配已验证产物；正式整库快照回滚与跨端纯撤销尚未交付。
 
 ## Structure
 
@@ -44,3 +43,5 @@ A collection of reusable skills for Codex/Claude Code.
 - Keep this repo as the single source of truth; keep device configuration, credentials, screenshots, shopping records and private logs outside it.
 
 - [2026-10-19 同步兼容性核查（HTML）](archives/wetype-lexicon/2026-10-19/report.html) · [同步限制与保护](skills/wetype-lexicon/references/synchronization.md)
+
+- [2026-10-22 原生导入与跨设备同步MVP（HTML）](archives/wetype-lexicon/2026-10-22/report.html) · [脱敏验收](archives/wetype-lexicon/2026-10-22/acceptance.json)

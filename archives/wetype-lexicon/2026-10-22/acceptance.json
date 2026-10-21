@@ -1,0 +1,323 @@
+{
+  "schema": 1,
+  "date": "2026-10-22",
+  "skill_version": "1.2.0",
+  "target": "macOS Apple Silicon WeType3.0.0(670)",
+  "delivered": [
+    "valid CSV/TSV/JSON word lists to formal personal dictionary",
+    "global duplicate validation and consistent preview",
+    "native add-only batches with backups",
+    "queue backpressure and signed resumable jobs",
+    "independent service crash/deadline restoration"
+  ],
+  "input_contract": {
+    "formats": [
+      "csv",
+      "tsv",
+      "json"
+    ],
+    "max_bytes": 2097152,
+    "max_input_rows": 100000,
+    "max_transaction_rows": 500,
+    "word_han_length": [
+      1,
+      16
+    ],
+    "pinyin": "one legal untoned syllable per Han character"
+  },
+  "current_native_integration": {
+    "actual_final_pending": 1002,
+    "actual_sync_head_modified_for_mock": false,
+    "all_import_policy_restored": true,
+    "batch_code_hash": "78db3582238a484026472a14b0f5ed25bc616eb9f83b880a9a6d984a6c0ed3ae",
+    "checks": [
+      {
+        "duplicate_rows": 1,
+        "existing_pairs": 1,
+        "input_rows": 1003,
+        "name": "full-file-normalization-existing-and-duplicate-preview",
+        "new_pairs": 1001,
+        "passed": true,
+        "unique_rows": 1002
+      },
+      {
+        "added_pairs": 899,
+        "committed_batches": 2,
+        "committed_rows": 899,
+        "name": "native-500-and-real-head-backpressure",
+        "passed": true,
+        "real_pending": 900
+      },
+      {
+        "logical_kv_unchanged": true,
+        "name": "resume-with-stalled-real-head-no-new-action",
+        "passed": true
+      },
+      {
+        "actual_final_pending": 1002,
+        "actual_head_unchanged": true,
+        "all_old_actions_unchanged": true,
+        "cloud_ack_proven": false,
+        "existing_skipped": 1,
+        "name": "explicit-mock-progress-native-resume-completes",
+        "new_pairs": 1001,
+        "passed": true,
+        "simulated_watermark_only": true
+      },
+      {
+        "all_new_batch_rows_verified_by_core": true,
+        "name": "new-process-pinyin-recall-and-native-record-accounting",
+        "passed": true,
+        "sample_ranks": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "sample_size": 5
+      },
+      {
+        "actual_source_action_delta": 3,
+        "attempts": 2,
+        "completed_added": 3,
+        "name": "native-batch-fault-before-swap-resume",
+        "no_duplicate_published_actions": true,
+        "passed": true,
+        "restart_ranks": [
+          1,
+          1,
+          1
+        ],
+        "source_unchanged_before_publication": true
+      },
+      {
+        "actual_source_action_delta": 3,
+        "attempts": 1,
+        "completed_added": 3,
+        "name": "native-batch-fault-after-swap-resume",
+        "no_duplicate_published_actions": true,
+        "passed": true,
+        "restart_ranks": [
+          1,
+          1,
+          1
+        ],
+        "source_unchanged_before_publication": false
+      }
+    ],
+    "cloud_transport_tested": false,
+    "code_hash": "77311e5302f76ec0fde9f507858ce4fa2d9ee54a77cf786d6e80cdbb56be915e",
+    "completed": true,
+    "fault_policy_accounting": [
+      {
+        "all_import_policy_restored": true,
+        "policy_import_transactions": 1,
+        "policy_native_add_total": 3,
+        "policy_noop_transactions": 0
+      },
+      {
+        "all_import_policy_restored": true,
+        "policy_import_transactions": 1,
+        "policy_native_add_total": 3,
+        "policy_noop_transactions": 0
+      }
+    ],
+    "formal_dictionary_written": false,
+    "mock_watermark_resume": true,
+    "official_app_controlled": false,
+    "old_actions_trimmed_for_mock": false,
+    "passed": true,
+    "policy_import_transactions": 3,
+    "policy_native_add_total": 1001,
+    "policy_noop_transactions": 0,
+    "scope": "private isolated native import integration",
+    "timings": [
+      {
+        "action_span": 500,
+        "added": 500,
+        "elapsed_seconds": 166.867,
+        "rows": 500,
+        "skipped_existing": 0,
+        "status": "attempted"
+      },
+      {
+        "action_span": 399,
+        "added": 399,
+        "elapsed_seconds": 142.351,
+        "rows": 399,
+        "skipped_existing": 0,
+        "status": "attempted"
+      },
+      {
+        "elapsed_seconds": 16.332,
+        "status": "waiting_sync"
+      },
+      {
+        "elapsed_seconds": 16.087,
+        "status": "waiting_sync"
+      },
+      {
+        "action_span": 102,
+        "added": 102,
+        "elapsed_seconds": 78.948,
+        "rows": 103,
+        "skipped_existing": 1,
+        "status": "attempted"
+      }
+    ],
+    "total_added": 1001,
+    "total_skipped": 1,
+    "transaction_count": 3
+  },
+  "native_cleanup_policy": {
+    "passed": true,
+    "completed": true,
+    "scope": "final production worker policy, validated in isolated native batch transactions",
+    "native_worker_source_sha256": "8711073ebc505d95cb5d6b203d2469b8e197057a77ec61526c36094d3e70d070",
+    "global_initialization_test_mode": false,
+    "original_kv_codec_preserved": true,
+    "per_add_instance_policy_restored": true,
+    "audited_native_adds": 1001,
+    "audit": "complete main records, old metadata, complete logical KV, old actions/head preserved; consecutive native new actions",
+    "normal_mode_new_process_recall": "every added batch row verified; separate original normal worker diagnostic also recalled500/500",
+    "public_native_bulk_api_claimed": false,
+    "official_App_configuration_changed": false,
+    "formal_dictionary_written_this_acceptance": false
+  },
+  "formal_current_acceptance": {
+    "passed": true,
+    "input_rows": 3,
+    "added": 0,
+    "skipped_existing": 3,
+    "swapped": false,
+    "no_exchange": true,
+    "seconds": 61.88,
+    "source_running": true,
+    "service_leases_restored": true,
+    "new_word_write_test": false
+  },
+  "service_recovery": {
+    "schema": 1,
+    "service_lease_source_sha256": "ea2341968ecab26c8fda33d15af10d3bed77a4ac813e967de451bc2dad3eb85b",
+    "independent_pure_tests": {
+      "passed": 28,
+      "total": 28,
+      "real_service_operations": false
+    },
+    "guardian_runtime_tests": {
+      "target": "disposable WordProbe app",
+      "cases": [
+        {
+          "scenario": "normal",
+          "coordinator_exit_code": 0,
+          "guardian_cause": "normal-release",
+          "restored": true
+        },
+        {
+          "scenario": "crash",
+          "coordinator_exit_code": -15,
+          "guardian_cause": "coordinator-exit",
+          "restored": true
+        },
+        {
+          "scenario": "timeout",
+          "coordinator_exit_code": -9,
+          "guardian_cause": "deadline-expired",
+          "restored": true
+        }
+      ],
+      "passed": 3,
+      "total": 3,
+      "original_guardian_and_identity_functions_AST_unchanged": true,
+      "all_test_service_permissions_restored": true,
+      "test_app_reopened_after_each_case": true,
+      "official_WeType_service_or_dictionary_accessed": false,
+      "explicit_input_source_API_called": false
+    },
+    "evidence_boundary": "Crash and timeout recovery tested on disposable WordProbe; these cases did not crash the official input method or test cloud delivery.",
+    "official_service_readonly_interlock": true
+  },
+  "pure_tests": {
+    "passed": true,
+    "tests": {
+      "batch_jobs": 27,
+      "service_interlock": 28,
+      "add_only_audit": 38,
+      "legacy_formal_policy": 8,
+      "sync_flow": 20,
+      "forward_recovery": 10
+    },
+    "total": 131,
+    "scope": "pure tests from staged release scripts; no App/database/network operations"
+  },
+  "historical_remote_observation": {
+    "date": "2026-10-21",
+    "new_words": 3,
+    "source_restart_recall": "3/3",
+    "receivers": [
+      {
+        "device": "iPhone",
+        "before": "0/3",
+        "after": "3/3"
+      },
+      {
+        "device": "another Mac",
+        "before": "0/3",
+        "after": "3/3"
+      }
+    ],
+    "receiver_use": "candidate viewing only, no selection",
+    "native_cleanup_policy_used": "original normal-mode worker",
+    "transfer_mechanism_distinguished": false
+  },
+  "boundaries": [
+    "completed means local processing, not cloud ACK",
+    "mock progress admission is isolated test-only, real head/actions unchanged",
+    "formal snapshot rollback and cross-device pure undo not delivered",
+    "no power-loss/reboot live acceptance",
+    "exact artifact only; no universal engine capacity claim"
+  ],
+  "private_data_included": false,
+  "artifact_manifest": {
+    "SKILL.md": "e87390c097bf7f7a83afdcb5e32790b5c6ea1371963530b10a765018eb8e1f50",
+    "agents/openai.yaml": "cd97a58a94e5caad8c67680c3d63d6414cdc56361ae5f1d2ecb84109b99a5b21",
+    "assets/example-words.tsv": "ecbe4e30a9d3a2220f0f159893c5eecd78979376fe454fb1f0ee5cbd4bc0b101",
+    "references/synchronization.md": "5c6e35107c558f26ece6a32951bfbd594032da7c2ff31ff42a7528047596a8f1",
+    "references/usage.md": "9776a7d4e609f9251fd0fb356cbbacd70444929f12e83542d54b2e34e2676a63",
+    "references/validation.md": "62443b80b798450cbcdbb34de5ca4c6dc7b1de49e1a2615d99acb6dadb7cba50",
+    "scripts/abi_profile.hpp": "02b0bd7b79384e9f0249a35cbeea203ac9acb5653e5d425db3ef05995c55c7b6",
+    "scripts/app_control.mm": "050975797b015bcd97b17e0e1f122ab4410317fa20f4fea845a497c2001f6a3a",
+    "scripts/audit.hpp": "c1f6ca30a20c37550d30046d218856bb90a5eba62c566ec1da5e634b56b7ff74",
+    "scripts/audit_helpers.py": "c2446fc92417eaf8dfe79b6f33504d68c4ea25695dbe0ca18f88928000e3835f",
+    "scripts/audit_tests.py": "ca093f67761e238649e2351cff281d9910b1ffd7648ccdd7712e70240f4fcace",
+    "scripts/backpressure_policy.py": "d48048da614e8d07bbd1d486768e3188000d37644b69f75b048c729576135986",
+    "scripts/batch_cli.py": "933ae96ba695fd23159c078f1ec0cca9e4b724355e8c44c3e5fc58f8143bc7b6",
+    "scripts/batch_tests.py": "cedc53cf67197c70987f9c8c6a2152822d8d2f7d84bdc76ec81bf0e8fca1a1ed",
+    "scripts/batch_words.py": "1a42eff891794e326ccbb33979c8880679f3bff6d3ae59f2667f58b7a3eaa5cc",
+    "scripts/dictionary_items.inc": "0bc72b0809cd8a01ddf0a0ec8492208b6e51769536bebff04263af2abd8b8dd4",
+    "scripts/engine_support.py": "5d71e99ec5e0d5635ff48e83d15f564dc1bd172ea459b35b0da16c2c01110fbd",
+    "scripts/input_source.cpp": "f9985a20a369ec7b68714c244cc9f71bf464c757c3d8323e5507f4a44d30562f",
+    "scripts/kv_hash.cpp": "b662fce443af9c4bb210e60b2ff205672fbdb591b36d8ab63b8ad43d4a65c397",
+    "scripts/lexicon_cli.py": "db231e62f6ab0e438341776eb3d11cf083fff584fb24b9f4715ad847de365fb0",
+    "scripts/lifecycle_tests.py": "300a06987b8f203d17787c3adea2c9612bd6e949b94a762d9cfbb95f653b2f96",
+    "scripts/native_worker.cpp": "8711073ebc505d95cb5d6b203d2469b8e197057a77ec61526c36094d3e70d070",
+    "scripts/remove_helpers.py": "cfba3e829b942ed4c1eb79613d2d8afc124a6ddc35d84899593865b4b6e053f9",
+    "scripts/remove_support.hpp": "0d95548a4ab691e89aabbf53585d98e9509c55e0b95d6c2ebd87eb9c82a0b768",
+    "scripts/remove_worker.cpp": "db2ada52ae29ff1665d04c6eb289574dff7cf759fd94039c71a2b6a658637e81",
+    "scripts/selftest.py": "7adddb98df1423cafef3fa0ff874911318a6ff7061737f90a697cb133fd7988b",
+    "scripts/service_lease.py": "ea2341968ecab26c8fda33d15af10d3bed77a4ac813e967de451bc2dad3eb85b",
+    "scripts/service_lease_tests.py": "5e001e37ca800386273c184b1a9fa390a28646512d7e2ad95cd59fdcb37a0f0c",
+    "scripts/sync-release.json": "66317f0d348d67a1f3803bd9c8e6391cb9c05658c60df009e967302c31369176",
+    "scripts/sync_cli.py": "fbe9c033bc49b9bf237a554623d03ba187d8e8feaa49fe05b0973608a2f54a14",
+    "scripts/sync_flow_tests.py": "316182b90d9797b35dd4640352ce19d31c885cc5a5bd0d3c9af3644feb1bea62",
+    "scripts/sync_learning_fixture.cpp": "d121968f3b7c47f12fb1457d844be6a0edfba70e2e631a482e87106144f63bd8",
+    "scripts/sync_policy_tests.py": "acc58fdff299c35452c56d470fb9066c71776ee9a5ec8eb854fe3895b1c5582f",
+    "scripts/sync_probe.cpp": "6b00078c1634df6ac5f114bf9d22ea61ce34337fc30e40f62efb7876aeada3dd",
+    "scripts/sync_recovery_tests.py": "1054dda9fb260524da0a3a0c261165b92031913fa229444cac823418ec043ede",
+    "scripts/sync_selftest.py": "d23d826479a9bee272993baf9a2804a438bac5a3e31b8e37d301f7bbea81e3e3",
+    "scripts/wetype": "255479250c35d270ceb471d18d8b3f9ada0757080faaf80b0b682e282858433b",
+    "scripts/wetype-sync": "3a3ff8e45d245005b77752e2018bdc69225779def348426c57b062a2724b98a4",
+    "scripts/wetype-tx": "199fd08e774513c866ec91d645dbaa50176702ea14018f3911c7739858e3061f"
+  }
+}

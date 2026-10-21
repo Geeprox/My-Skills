@@ -264,23 +264,29 @@ def current(root):
 def han(c):
     return '\u3400' <= c <= '\u9fff' or '\U00020000' <= c <= '\U000323af'
 
-def normalize_rows(source):
+def normalize_rows(source, max_rows=500):
     if source.stat().st_size > 2 * 1024 * 1024:
         raise Error('Word list exceeds 2 MiB')
     text = source.read_text('utf-8-sig')
     if source.suffix.lower() == '.json':
-        raw = json.loads(text)
+        def unique_fields(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result: raise Error('Duplicate JSON field: '+key)
+                result[key] = value
+            return result
+        raw = json.loads(text, object_pairs_hook=unique_fields)
         if not isinstance(raw, list):
             raise Error('JSON input must be an array of {word,pinyin}')
     elif source.suffix.lower() in ('.csv', '.tsv'):
         reader = csv.DictReader(io.StringIO(text), delimiter='\t' if source.suffix.lower() == '.tsv' else ',')
-        if set(reader.fieldnames or ()) != {'word', 'pinyin'}:
+        if len(reader.fieldnames or ()) != 2 or set(reader.fieldnames or ()) != {'word', 'pinyin'}:
             raise Error('CSV/TSV requires exactly two headers: word,pinyin')
         raw = list(reader)
     else:
         raise Error('Supported word lists: UTF-8 .tsv, .csv, .json')
-    if not 1 <= len(raw) <= 500:
-        raise Error('Each batch must contain 1–500 input rows')
+    if not 1 <= len(raw) <= max_rows:
+        raise Error('Word list must contain 1–'+str(max_rows)+' input rows')
     rows, seen, duplicates, errors = [], {}, [], []
     for number, r in enumerate(raw, 1):
         try:
