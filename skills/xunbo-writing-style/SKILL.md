@@ -1,85 +1,46 @@
 ---
 name: xunbo-writing-style
-description: Write or rewrite Chinese posts in 勋博 (Xunbo)'s reflective, conversational voice with cross-domain analogies, rhetorical questions, parenthetical asides, and emojis/symbols. Use when the user asks to draft, rewrite, polish, or expand content in this specific voice or to discuss a topic as 勋博 would.
+description: Write or revise Chinese Moments posts in Xunbo's voice when the user requests his personal style, using concrete observations, precise cross-domain connections, conversational turns, and understated humor.
 ---
 
-# 勋博 (Xunbo) Writing Style
+# Xunbo Writing Style
 
-## Overview
-Write Chinese prose in 勋博's voice: conversational, reflective, playful, and analytical. Use the sample corpus in `references/xunbo_posts.md` to calibrate tone, rhythm, and rhetorical devices. Do not copy sentences verbatim. Prefer Chinese output, and allow English proper nouns and technical terms when needed.
+写出勋博会愿意发给熟人的中文，而不是套用一篇“深度思考”文章的外形。适用于用户明确要求的个人风格写作、改写和压缩；保留当前请求的事实、立场、长度和用途。
 
-## Output Length
-Default to 300-600 Chinese characters. Expand up to ~1200 when the topic is complex or when the user requests longer depth. Allow 1-8 lines for micro-posts, jokes, or short poems.
+## 抓住声音
 
-## Workflow
-1. Identify the topic, stance, audience, and desired effect. Ask one clarifying question if any are unclear.
-2. Choose a template that fits length and form (A-H). If unclear, default to Template A.
-3. Sketch a spine: hook -> core argument -> analogy or cross-domain pivot -> counterpoint -> reflective close.
-4. Draft with the style signals below.
-5. Final pass: check for voice consistency, clarity, and punch.
-6. **Important**: After finalizing the content, write it to a temp file (e.g., `/tmp/xunbo_output.txt`), then use Bash to copy it to clipboard with `cat /tmp/xunbo_output.txt | pbcopy`, and finally output the content to the user.
+- 从真实触发点进入：刚遇到的麻烦、看到的画面、一句对话、一个实际选择。先有东西可说，再决定需不需要抽象。
+- 让读者看见一次有价值的转念。常见方式是把日常事物放进工程、物理、语言或产品的另一套坐标系；联系要精确，不能只换几个术语。
+- 语气像和熟人聊天。可以直接、认真，也可以插一句括号、英文术语或表情；这些是节奏工具，不是每篇必备配料。
+- 长短由内容决定。一两句、短行对话、几段随想、较长的技术札记都成立。没有默认 300–600 字，也没有固定段数、五步推导或必选模板。
+- 容许自嘲、自我拆台和俗气的动机。一本正经解释半天，最后承认“主要是太贵”，比硬升到文明和人生更像他。
+- 结尾可以是笑点、回扣、尚未解决的问题，或一个具体选择。说完就停，不替笑点作注释，不强行总结价值。
 
-## Style Signals
-- Start with a vivid hook or a slightly ironic one-liner.
-- Prefer conversational Chinese; keep sentences varied in length.
-- Use cross-domain analogies or associations; keep them grounded and avoid empty abstractions.
-- Use rhetorical questions and self-aware caveats.
-- Insert parenthetical asides, bracketed commentary, or quick side jokes.
-- Use wordplay, homophones, or light classical allusions when it adds flavor.
-- Allow English proper nouns and technical terms when needed.
-- Use emojis or symbol emoticons where it adds tone, not noise.
-- Close with a reflective line, a callback, or a concise value statement. Allow a blunt one-liner when the form is short.
+需要校准语感时，按当前类型阅读 [虚构示例](references/xunbo_posts.md)。这些是为公开版本新写的教学示例，用来说明语气和转折，不是用户原文、原话或真实经历。短幽默看前半；技术札记和图文关系看后半。
 
-## Reusable Templates (Hard Constraints)
-- Choose exactly one template below per output and follow its paragraph order.
-- Keep 3–5 paragraphs unless the chosen template requires a numbered list.
-- End with a reflective/value statement or a concise callback.
+## 按任务调整
 
-### Template A: Hook → Claim → Two Analogies → Close
-- Paragraph 1: hook with a vivid observation or ironic one-liner.
-- Paragraph 2: state the core claim and why it matters.
-- Paragraph 3: everyday analogy and contrast ("气氛 vs 可执行").
-- Paragraph 4: technical analogy that highlights information loss.
-- Paragraph 5: reflective close.
+**一句话或短幽默**：留一个清楚的机关即可，例如字面化、错换语境、夸张后自我戳破。读者应当能迅速找到笑点，不加解释段。 也可以从语言本身转弯：交换两组词的位置，用同音或近音把意思折向另一处。声音、语序和意思要同时顺，不能为了对仗硬凑。歌词或共同文化记忆是加分层，不应成为唯一入口；不知道出处时不替作者指定。
 
-### Template B: Thought Experiment → Stance → Caveat → Reframe → Close
-- Paragraph 1: set the thought experiment or scenario.
-- Paragraph 2: state your stance.
-- Paragraph 3: add a self-aware caveat or counterpoint.
-- Paragraph 4: reframe with a rough calculation or scale shift.
-- Paragraph 5: value-driven close.
+**生活随想**：保留观察的细节、联想发生的过程，以及作者自己的位置。不要把一个具体经历抹成泛泛的“现代人都如何”。
 
-### Template C: Level 1/2/3 Ladder → Close
-- Paragraph 1: define the question.
-- Paragraphs 2–4: use explicit "Level 1/2/3" progression with increasing abstraction.
-- Paragraph 5: philosophical or reflective close.
+**技术或研究札记**：讲清实际问题、约束、自己的取舍。术语服务于精度；类比是理解入口，不能代替机制证据。用户要深入时可以展开，不要求每篇都变短。
 
-### Template D: Numbered Points → Blunt Close
-- Use a numbered list (1/2/3) to structure the argument.
-- Keep each point 2–4 sentences with one concrete example.
-- End with a short blunt line, emoji, or symbol.
+**带图或视频**：文字可以和画面互相补完。已有画面中可见的细节，不必再叙述一遍；关键笑点依赖画面时先确认已看过素材。没有素材就不虚构场景，必要时给出明确的配图建议。
 
-### Template E: Two-Line Pun → Wry Tag
-- Use two short lines with a homophone or wordplay.
-- End with a light tag or emoji.
+## 写作时的判断
 
-### Template F: Dialogue Joke → Punchline
-- Use a 3–6 line dialogue format.
-- Escalate a simple setup to a nerdy or literal punchline.
+1. 先用现有信息确定真正想说的一件事，以及读者需要的最少背景。合理可推断的小选择直接处理；事实缺口会改变内容时再问。
+2. 选最自然的形式，不先挑模板。保留原稿中有辨识度的细节、措辞和停顿，删掉重复铺垫。
+3. 检查类比有没有偷偷跨到未经证实的因果、普遍规律或价值判断。保留锋芒，但不模仿样本中的错误、刻板印象和群体轻蔑。
+4. 读一遍：像一个人在说话吗？每段有新信息吗？笑点后是否又解释了一遍？有没有把短帖子扩成了公众号文章？
 
-### Template G: Free Verse → Image → Turn
-- Use 4–7 short lines of free verse.
-- Start with a concrete image, then pivot to meaning.
+除非用户要求分析过程，直接交付文案。不要自动复制剪贴板、发布、发送或修改个人档案。
 
-### Template H: Research Note → Model → Conclusion
-- Define the question and the naive intuition.
-- List constraints or criteria.
-- Reference multiple standards or sources as placeholders when needed (e.g., [图]).
-- Conclude with a practical choice and a short takeaway.
+## 事实与样本边界
 
-## Content Constraints
-- Do not invent concrete facts, stats, or citations. If needed, ask the user or mark as hypothetical.
-- Avoid sterile academic tone or overly formal structure unless explicitly requested.
+公开参考文件只使用明确标注的虚构示例，不包含私人朋友圈原文、联系人、发布时间、原帖 ID、照片或本地路径。用户在当前任务中提供的私人材料留在当前任务中，不自动加入公开样本。
 
-## Resources
-- `references/xunbo_posts.md`: sample posts for style calibration.
+区分作者亲自写作、转述、引文与 AI 辅助文本。用户选择或发布一段 AI 文字，只能说明他认可过这次表达，不能自动把整段句法当成自然语感的首要范本。不要机械堆叠“系统”“熵”“文明”等大词来制造风格。
+
+不编造用户的经历、情绪、朋友评价、数字或引文。虚构示例只供理解写法，不能搬进交付文案冒充用户亲历。仿写可以新创比喻；事实缺口照实保留。
