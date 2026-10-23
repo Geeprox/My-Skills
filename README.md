@@ -6,7 +6,7 @@ A collection of reusable skills for Codex/Claude Code.
 
 | Skill | 名称 | 介绍 |
 |---|---|---|
-| [xunbo-writing-style](skills/xunbo-writing-style/SKILL.md) | 勋博写作风格 | 以具体观察、自然转念和克制幽默撰写或改写中文；公开样例均为虚构，长度随内容决定。 |
+| [xunbo-writing-style](skills/xunbo-writing-style/SKILL.md) | 勋博写作风格 | 参考作者原话的去隐私节录撰写或改写中文；保留自然措辞与长短变化，不强套固定模板。 |
 | [phone-shopping](skills/phone-shopping/SKILL.md) | 操作手机挑选采购商品 | 自动准备缺失的手机操作能力；先调研推荐信息，再跨品牌、店铺、SPU/SKU 核对商详与到手价，优先官方/平台旗舰店并综合优惠；多设备动态并行，必要时问客服、加购分类，长任务留档并交付决策文档。 |
 | [wetype-lexicon](skills/wetype-lexicon/SKILL.md) | 微信输入法个人词库 | 接收有效词表并分批导入正式个人词库，支持校验、查重、预览、备份、队列背压和断点续导，原生学习记录沿官方链路同步。适配 macOS Apple Silicon 微信输入法3.0.0（670）。 |
 
